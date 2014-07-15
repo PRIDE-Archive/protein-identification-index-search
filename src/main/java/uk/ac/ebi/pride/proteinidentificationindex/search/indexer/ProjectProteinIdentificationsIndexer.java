@@ -90,11 +90,9 @@ public class ProjectProteinIdentificationsIndexer {
     }
 
     public void deleteAllProteinIdentificationsForProject(String projectAccession) {
-
         // search by project accession
         List<ProteinIdentification> proteinIdentifications = this.proteinIdentificationSearchService.findByProjectAccession(projectAccession);
         this.proteinIdentificationIndexService.delete(proteinIdentifications);
-
     }
 
 }
