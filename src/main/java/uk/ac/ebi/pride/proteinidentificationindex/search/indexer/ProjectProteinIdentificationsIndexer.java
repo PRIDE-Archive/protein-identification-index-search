@@ -7,9 +7,11 @@ import uk.ac.ebi.pride.proteinidentificationindex.search.model.ProteinIdentifica
 import uk.ac.ebi.pride.proteinidentificationindex.search.service.ProteinIdentificationIndexService;
 import uk.ac.ebi.pride.proteinidentificationindex.search.service.ProteinIdentificationSearchService;
 import uk.ac.ebi.pride.proteinindex.search.model.ProteinIdentified;
+import uk.ac.ebi.pride.proteinindex.search.synonyms.ProteinAccessionSynonymsFinder;
 import uk.ac.ebi.pride.proteinindex.search.util.ProteinBuilder;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -55,14 +57,23 @@ public class ProjectProteinIdentificationsIndexer {
                 + " in " + (double) (endTime - startTime) / 1000.0 + " seconds");
 
         if (proteinsFromFile != null && proteinsFromFile.size()>0) {
-            // add all PSMs to index
+
             startTime = System.currentTimeMillis();
 
-            // get synonyms to add to the identifications
-            // TODO
+
+            Map<String, TreeSet<String>> synonyms = null;
+            try {
+                // get synonyms to add to the identifications
+                synonyms = ProteinAccessionSynonymsFinder.findProteinSynonymsForAccession(getAccessionSet(proteinsFromFile));
+            } catch (IOException e) {
+                logger.error("Cannot get synonyms for PROJECT:" + projectAccession + "and ASSAY:" + assayAccession );
+                logger.error("Reason: ");
+                e.printStackTrace();
+            }
 
             // convert to identifications model
             List<ProteinIdentification> proteinIdentifications = getAsProteinIdentifications(proteinsFromFile, projectAccession, assayAccession);
+            addSynonymsToProteinIdentifications(proteinIdentifications,synonyms);
 
             // save
             proteinIdentificationIndexService.save(proteinIdentifications);
@@ -73,6 +84,21 @@ public class ProjectProteinIdentificationsIndexer {
             endTime = System.currentTimeMillis();
             logger.info("DONE indexing all Protein Identifications for project " + projectAccession + " in " + (double) (endTime - startTime) / 1000.0 + " seconds");
         }
+    }
+
+    private void addSynonymsToProteinIdentifications(List<ProteinIdentification> proteinIdentifications, Map<String, TreeSet<String>> synonyms) {
+        // TODO
+    }
+
+    private Set<String> getAccessionSet(List<ProteinIdentified> proteinsFromFile) {
+
+        Set<String> res = new TreeSet<String>();
+
+        for (ProteinIdentified proteinIdentified: proteinsFromFile) {
+            res.add(proteinIdentified.getAccession());
+        }
+
+        return res;
     }
 
     private List<ProteinIdentification> getAsProteinIdentifications(List<ProteinIdentified> proteinsIdentified, String projectAccession, String assayAccession) {
