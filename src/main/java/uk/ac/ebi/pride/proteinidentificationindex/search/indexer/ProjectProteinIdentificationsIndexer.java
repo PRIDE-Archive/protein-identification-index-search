@@ -54,20 +54,25 @@ public class ProjectProteinIdentificationsIndexer {
                 + " and ASSAY:" + assayAccession
                 + " in " + (double) (endTime - startTime) / 1000.0 + " seconds");
 
-        // add all PSMs to index
-        startTime = System.currentTimeMillis();
+        if (proteinsFromFile != null && proteinsFromFile.size()>0) {
+            // add all PSMs to index
+            startTime = System.currentTimeMillis();
 
-        List<ProteinIdentification> proteinIdentifications = getAsProteinIdentifications(proteinsFromFile, projectAccession, assayAccession);
+            // get synonyms to add to the identifications
+            // TODO
 
-        proteinIdentificationIndexService.save(proteinIdentifications);
-        logger.debug("COMMITTED " + proteinsFromFile.size() +
-                " Protein Identifications from PROJECT:" + projectAccession +
-                " ASSAY:" + assayAccession);
+            // convert to identifications model
+            List<ProteinIdentification> proteinIdentifications = getAsProteinIdentifications(proteinsFromFile, projectAccession, assayAccession);
 
+            // save
+            proteinIdentificationIndexService.save(proteinIdentifications);
+            logger.debug("COMMITTED " + proteinsFromFile.size() +
+                    " Protein Identifications from PROJECT:" + projectAccession +
+                    " ASSAY:" + assayAccession);
 
-        endTime = System.currentTimeMillis();
-        logger.info("DONE indexing all Protein Identifications for project " + projectAccession + " in " + (double) (endTime - startTime) / 1000.0 + " seconds");
-
+            endTime = System.currentTimeMillis();
+            logger.info("DONE indexing all Protein Identifications for project " + projectAccession + " in " + (double) (endTime - startTime) / 1000.0 + " seconds");
+        }
     }
 
     private List<ProteinIdentification> getAsProteinIdentifications(List<ProteinIdentified> proteinsIdentified, String projectAccession, String assayAccession) {
