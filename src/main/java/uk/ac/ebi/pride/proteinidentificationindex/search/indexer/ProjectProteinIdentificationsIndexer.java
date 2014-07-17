@@ -25,9 +25,14 @@ public class ProjectProteinIdentificationsIndexer {
     private ProteinIdentificationSearchService proteinIdentificationSearchService;
     private ProteinIdentificationIndexService proteinIdentificationIndexService;
 
-    public ProjectProteinIdentificationsIndexer(ProteinIdentificationSearchService proteinIdentificationSearchService, ProteinIdentificationIndexService proteinIdentificationIndexService) {
+    private uk.ac.ebi.pride.proteinindex.search.search.service.ProteinIdentificationSearchService proteinCatalog;
+
+
+    public ProjectProteinIdentificationsIndexer(ProteinIdentificationSearchService proteinIdentificationSearchService, ProteinIdentificationIndexService proteinIdentificationIndexService,
+                                                uk.ac.ebi.pride.proteinindex.search.search.service.ProteinIdentificationSearchService proteinCatalog) {
         this.proteinIdentificationSearchService = proteinIdentificationSearchService;
         this.proteinIdentificationIndexService = proteinIdentificationIndexService;
+        this.proteinCatalog = proteinCatalog;
     }
 
 
@@ -60,20 +65,9 @@ public class ProjectProteinIdentificationsIndexer {
 
             startTime = System.currentTimeMillis();
 
-
-            Map<String, TreeSet<String>> synonyms = null;
-            try {
-                // get synonyms to add to the identifications
-                synonyms = ProteinAccessionSynonymsFinder.findProteinSynonymsForAccession(getAccessionSet(proteinsFromFile));
-            } catch (IOException e) {
-                logger.error("Cannot get synonyms for PROJECT:" + projectAccession + "and ASSAY:" + assayAccession );
-                logger.error("Reason: ");
-                e.printStackTrace();
-            }
-
             // convert to identifications model
             List<ProteinIdentification> proteinIdentifications = getAsProteinIdentifications(proteinsFromFile, projectAccession, assayAccession);
-            addSynonymsToProteinIdentifications(proteinIdentifications,synonyms);
+            addSynonymsToProteinIdentifications(proteinIdentifications);
 
             // save
             proteinIdentificationIndexService.save(proteinIdentifications);
@@ -86,8 +80,21 @@ public class ProjectProteinIdentificationsIndexer {
         }
     }
 
-    private void addSynonymsToProteinIdentifications(List<ProteinIdentification> proteinIdentifications, Map<String, TreeSet<String>> synonyms) {
-        // TODO
+    /**
+     * Use the protein Catalog to retrieve synonym information
+     *
+     * @param proteinIdentifications
+     */
+    private void addSynonymsToProteinIdentifications(List<ProteinIdentification> proteinIdentifications) {
+        for (ProteinIdentification proteinIdentification: proteinIdentifications) {
+            proteinIdentification.setSynonyms(new TreeSet<String>());
+            List<ProteinIdentified> proteinsFromCatalog = proteinCatalog.findBySynonyms(proteinIdentification.getAccession());
+            if (proteinsFromCatalog != null) {
+                for (ProteinIdentified proteinFromCatalog: proteinsFromCatalog) {
+                    proteinIdentification.getSynonyms().addAll(proteinFromCatalog.getSynonyms());
+                }
+            }
+        }
     }
 
     private Set<String> getAccessionSet(List<ProteinIdentified> proteinsFromFile) {
