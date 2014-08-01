@@ -60,6 +60,9 @@ public class ProteinIdentificationIndexBuilder {
     @Autowired
     private ProteinIdentificationIndexService proteinIdentificationIndexService;
 
+    @Autowired
+    private uk.ac.ebi.pride.proteinindex.search.search.service.ProteinIdentificationSearchService proteinCatalog;
+
 
     public static void main(String[] args) {
 
@@ -80,7 +83,7 @@ public class ProteinIdentificationIndexBuilder {
         logger.info("All Protein Identifications are now DELETED");
 
         // create the indexer
-        ProjectProteinIdentificationsIndexer projectProteinIdentificationsIndexer = new ProjectProteinIdentificationsIndexer(proteinIdentificationIndexBuilder.proteinIdentificationSearchService, proteinIdentificationIndexBuilder.proteinIdentificationIndexService);
+        ProjectProteinIdentificationsIndexer projectProteinIdentificationsIndexer = new ProjectProteinIdentificationsIndexer(proteinIdentificationIndexBuilder.proteinIdentificationSearchService, proteinIdentificationIndexBuilder.proteinIdentificationIndexService, proteinIdentificationIndexBuilder.proteinCatalog);
 
         // iterate through project to index psms
         for (ProjectProvider project : projects) {

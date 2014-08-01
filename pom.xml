@@ -4,7 +4,7 @@
     <parent>
         <groupId>uk.ac.ebi.pride.maven</groupId>
         <artifactId>pride-base-master</artifactId>
-        <version>1.0.2</version>
+        <version>1.0.3</version>
     </parent>
 
     <groupId>uk.ac.ebi.pride</groupId>
@@ -51,10 +51,8 @@
     <properties>
         <protein.index.search.version>0.1.5-SNAPSHOT</protein.index.search.version>
         <archive.repo.version>0.1.17-SNAPSHOT</archive.repo.version>
-        <spring.version>3.2.5.RELEASE</spring.version>
-        <archive.data.provider.api.version>2.0.1-SNAPSHOT</archive.data.provider.api.version>
-        <solrj.version>4.0.0</solrj.version>
-        <spring.test.version>4.0.2.RELEASE</spring.test.version>
+        <archive.data.provider.api.version>2.0.3</archive.data.provider.api.version>
+        <jmztab.version>3.0.0</jmztab.version>
     </properties>
 
     <build>
@@ -161,13 +159,24 @@
                     </archive>
                 </configuration>
             </plugin>
+
+            <!--compiler plugin-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven.compiler.plugin}</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
     <profiles>
         <!-- select this profile to build the indexer into its ZIP file -->
         <profile>
-            <id>psm-indexer-assembly</id>
+            <id>protein-identification-indexer-assembly</id>
             <build>
                 <plugins>
                     <!--assembly to zip-->
@@ -198,7 +207,6 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
-            <version>${spring.test.version}</version>
             <scope>test</scope>
         </dependency>
 
@@ -206,7 +214,6 @@
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-solr</artifactId>
-            <version>1.2.1.RELEASE</version>
         </dependency>
 
         <!--SolrJ-->
@@ -266,7 +273,7 @@
             <groupId>uk.ac.ebi.pride</groupId>
             <artifactId>jmztab-modular-model</artifactId>
             <!-- based on mzTab specification version 1.0 RC5-->
-            <version>2.1.8-SNAPSHOT</version>
+            <version>${jmztab.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>log4j</groupId>
@@ -279,7 +286,7 @@
             <groupId>uk.ac.ebi.pride</groupId>
             <artifactId>jmztab-modular-util</artifactId>
             <!-- based on mzTab specification version 1.0 RC5-->
-            <version>2.1.8-SNAPSHOT</version>
+            <version>${jmztab.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>log4j</groupId>
