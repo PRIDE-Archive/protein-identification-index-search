@@ -14,6 +14,7 @@ import uk.ac.ebi.pride.archive.dataprovider.project.ProjectProvider;
 import uk.ac.ebi.pride.archive.repo.assay.AssayRepository;
 import uk.ac.ebi.pride.archive.repo.file.ProjectFileRepository;
 import uk.ac.ebi.pride.archive.repo.project.ProjectRepository;
+import uk.ac.ebi.pride.proteinindex.search.indexers.ProteinDetailsIndexer;
 import uk.ac.ebi.pride.proteinindex.search.util.ErrorLogOutputStream;
 import uk.ac.ebi.pride.proteinidentificationindex.search.indexer.ProjectProteinIdentificationsIndexer;
 import uk.ac.ebi.pride.proteinidentificationindex.search.service.ProteinIdentificationIndexService;
@@ -61,7 +62,11 @@ public class ProteinIdentificationIndexBuilder {
     private ProteinIdentificationIndexService proteinIdentificationIndexService;
 
     @Autowired
-    private uk.ac.ebi.pride.proteinindex.search.search.service.ProteinIdentificationSearchService proteinCatalog;
+    private uk.ac.ebi.pride.proteinindex.search.search.service.ProteinIdentificationSearchService proteinCatalogSearchService;
+    @Autowired
+    private uk.ac.ebi.pride.proteinindex.search.search.service.ProteinIdentificationIndexService proteinCatalogIndexService;
+    @Autowired
+    private ProteinDetailsIndexer proteinCatalogDetailsIndexer;
 
 
     public static void main(String[] args) {
@@ -83,7 +88,7 @@ public class ProteinIdentificationIndexBuilder {
         logger.info("All Protein Identifications are now DELETED");
 
         // create the indexer
-        ProjectProteinIdentificationsIndexer projectProteinIdentificationsIndexer = new ProjectProteinIdentificationsIndexer(proteinIdentificationIndexBuilder.proteinIdentificationSearchService, proteinIdentificationIndexBuilder.proteinIdentificationIndexService, proteinIdentificationIndexBuilder.proteinCatalog);
+        ProjectProteinIdentificationsIndexer projectProteinIdentificationsIndexer = new ProjectProteinIdentificationsIndexer(proteinIdentificationIndexBuilder.proteinIdentificationSearchService, proteinIdentificationIndexBuilder.proteinIdentificationIndexService, proteinIdentificationIndexBuilder.proteinCatalogSearchService, proteinIdentificationIndexBuilder.proteinCatalogIndexService, proteinIdentificationIndexBuilder.proteinCatalogDetailsIndexer);
 
         // iterate through project to index psms
         for (ProjectProvider project : projects) {

@@ -91,6 +91,14 @@
         <constructor-arg value="#{ solrProteinCatalogRepositoryFactory.create() }"/>
     </bean>
 
+    <bean id="proteinCatalogIndexService" class="uk.ac.ebi.pride.proteinindex.search.search.service.ProteinIdentificationIndexService">
+        <constructor-arg value="#{ solrProteinCatalogRepositoryFactory.create() }"/>
+    </bean>
+
+    <bean id="proteinCatalogDetailsIndexer" class="uk.ac.ebi.pride.proteinindex.search.indexers.ProteinDetailsIndexer">
+        <constructor-arg ref="proteinCatalogSearchService" />
+        <constructor-arg ref="proteinCatalogIndexService" />
+    </bean>
 
     <!-- property files -->
     <context:property-placeholder location="classpath:props/*.properties" ignore-unresolvable="true"/>
