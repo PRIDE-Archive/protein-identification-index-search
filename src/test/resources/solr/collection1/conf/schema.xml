@@ -100,8 +100,8 @@
         <!-- identifier for each document: the protein accession -->
         <field name="id" type="string" indexed="true" stored="true" required="true" multiValued="false"/>
         <field name="synonyms" type="text_ws" indexed="true" stored="true" required="false" multiValued="true"/>
-        <field name="project_accessions" type="text_ws" indexed="true" stored="true" required="false" multiValued="true" />
-        <field name="assay_accessions" type="text_ws" indexed="true" stored="true" required="false" multiValued="true" />
+        <field name="project_accession" type="string" indexed="true" stored="true" required="false" multiValued="false" />
+        <field name="assay_accession" type="string" indexed="true" stored="true" required="false" multiValued="false" />
         <field name="sequence" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
         <field name="description" type="text_ws" indexed="true" stored="true" required="false" multiValued="true"/>
 

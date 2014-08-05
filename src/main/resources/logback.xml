@@ -1,20 +1,22 @@
-<configuration scan="true" scanPeriod="30 seconds">
+<configuration>
+
+    <contextName>protein-identification-indexer</contextName>
 
     <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
         <resetJUL>true</resetJUL>
     </contextListener>
 
     <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-        <file>log/psm_indexer.log</file>
-
+        <file>log/protein_identification_indexer.log</file>
+        <append>true</append>
         <encoder>
-            <pattern>%msg%n</pattern>
+            <pattern>%contextName %date %level %logger{10} [%file : %line] %msg%n</pattern>
         </encoder>
     </appender>
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%msg%n</pattern>
+            <pattern>%contextName [%file : %line] - %msg%n</pattern>
         </encoder>
     </appender>
 
@@ -22,7 +24,7 @@
     <logger name="uk.ac.ebi.pride.proteinidentificationindex.search" level="DEBUG"/>
     <logger name="org.springframework" level="ERROR"/>
 
-    <root level="ERROR">
+    <root level="INFO">
         <appender-ref ref="FILE"/>
         <appender-ref ref="STDOUT"/>
     </root>
