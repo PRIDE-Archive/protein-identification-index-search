@@ -6,12 +6,10 @@ import uk.ac.ebi.pride.jmztab.model.MZTabFile;
 import uk.ac.ebi.pride.proteinidentificationindex.search.model.ProteinIdentification;
 import uk.ac.ebi.pride.proteinidentificationindex.search.service.ProteinIdentificationIndexService;
 import uk.ac.ebi.pride.proteinidentificationindex.search.service.ProteinIdentificationSearchService;
+import uk.ac.ebi.pride.proteinindex.search.indexers.ProteinDetailsIndexer;
 import uk.ac.ebi.pride.proteinindex.search.model.ProteinIdentified;
-import uk.ac.ebi.pride.proteinindex.search.synonyms.ProteinAccessionSynonymsFinder;
 import uk.ac.ebi.pride.proteinindex.search.util.ProteinBuilder;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -25,14 +23,20 @@ public class ProjectProteinIdentificationsIndexer {
     private ProteinIdentificationSearchService proteinIdentificationSearchService;
     private ProteinIdentificationIndexService proteinIdentificationIndexService;
 
-    private uk.ac.ebi.pride.proteinindex.search.search.service.ProteinIdentificationSearchService proteinCatalog;
+    private uk.ac.ebi.pride.proteinindex.search.search.service.ProteinIdentificationSearchService proteinCatalogSearchService;
+    private uk.ac.ebi.pride.proteinindex.search.search.service.ProteinIdentificationIndexService proteinCatalogIndexService;
+    private ProteinDetailsIndexer proteinCatalogDetailsIndexer;
 
 
     public ProjectProteinIdentificationsIndexer(ProteinIdentificationSearchService proteinIdentificationSearchService, ProteinIdentificationIndexService proteinIdentificationIndexService,
-                                                uk.ac.ebi.pride.proteinindex.search.search.service.ProteinIdentificationSearchService proteinCatalog) {
+                                                uk.ac.ebi.pride.proteinindex.search.search.service.ProteinIdentificationSearchService proteinCatalogSearchService,
+                                                uk.ac.ebi.pride.proteinindex.search.search.service.ProteinIdentificationIndexService proteinCatalogIndexService,
+                                                ProteinDetailsIndexer proteinCatalogDetailsIndexer) {
         this.proteinIdentificationSearchService = proteinIdentificationSearchService;
         this.proteinIdentificationIndexService = proteinIdentificationIndexService;
-        this.proteinCatalog = proteinCatalog;
+        this.proteinCatalogSearchService = proteinCatalogSearchService;
+        this.proteinCatalogIndexService = proteinCatalogIndexService;
+        this.proteinCatalogDetailsIndexer = proteinCatalogDetailsIndexer;
     }
 
 
@@ -88,8 +92,18 @@ public class ProjectProteinIdentificationsIndexer {
     private void addSynonymsToProteinIdentifications(List<ProteinIdentification> proteinIdentifications) {
         for (ProteinIdentification proteinIdentification: proteinIdentifications) {
             proteinIdentification.setSynonyms(new TreeSet<String>());
-            List<ProteinIdentified> proteinsFromCatalog = proteinCatalog.findBySynonyms(proteinIdentification.getAccession());
+            List<ProteinIdentified> proteinsFromCatalog = proteinCatalogSearchService.findBySynonyms(proteinIdentification.getAccession());
             if (proteinsFromCatalog != null) {
+                for (ProteinIdentified proteinFromCatalog: proteinsFromCatalog) {
+                    proteinIdentification.getSynonyms().addAll(proteinFromCatalog.getSynonyms());
+                }
+            } else { // if not present, we need to update the catalog
+                List<ProteinIdentified> proteinsToCatalog = getAsCatalogProtein(proteinIdentifications);
+                this.proteinCatalogIndexService.save(proteinsToCatalog);
+                this.proteinCatalogDetailsIndexer.addSynonymsToProteins(proteinsToCatalog);
+                this.proteinCatalogDetailsIndexer.addDetailsToProteins(proteinsToCatalog);
+                // add details to identifications
+                proteinsFromCatalog = proteinCatalogSearchService.findBySynonyms(proteinIdentification.getAccession());
                 for (ProteinIdentified proteinFromCatalog: proteinsFromCatalog) {
                     proteinIdentification.getSynonyms().addAll(proteinFromCatalog.getSynonyms());
                 }
@@ -119,6 +133,22 @@ public class ProjectProteinIdentificationsIndexer {
                 newPI.setSequence(proteinIdentified.getSequence());
                 newPI.setSynonyms(proteinIdentified.getSynonyms());
                 newPI.setDescription(proteinIdentified.getDescription());
+                res.add(newPI);
+            }
+            return res;
+        } else {
+            return null;
+        }
+    }
+
+    private List<ProteinIdentified> getAsCatalogProtein(List<ProteinIdentification> proteinIdentifications) {
+        if (proteinIdentifications != null) {
+            List<ProteinIdentified> res = new LinkedList<ProteinIdentified>();
+            for (ProteinIdentification proteinIdentification: proteinIdentifications) {
+                ProteinIdentified newPI = new ProteinIdentified();
+                newPI.setAccession(proteinIdentification.getAccession());
+                newPI.setProjectAccessions(new TreeSet<String>()); // TODO: not needed in the future catalog
+                newPI.setAssayAccessions(new TreeSet<String>()); // TODO: not needed in the future catalog
                 res.add(newPI);
             }
             return res;
