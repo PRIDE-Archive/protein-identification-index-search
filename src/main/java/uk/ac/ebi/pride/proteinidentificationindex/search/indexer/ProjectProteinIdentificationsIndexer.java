@@ -93,19 +93,30 @@ public class ProjectProteinIdentificationsIndexer {
         for (ProteinIdentification proteinIdentification: proteinIdentifications) {
             proteinIdentification.setSynonyms(new TreeSet<String>());
             List<ProteinIdentified> proteinsFromCatalog = proteinCatalogSearchService.findBySynonyms(proteinIdentification.getAccession());
-            if (proteinsFromCatalog != null) {
+            if (proteinsFromCatalog != null && proteinsFromCatalog.size()>0) {
+                logger.debug("Protein " + proteinIdentification.getAccession() + " already in the Catalog - getting details...");
                 for (ProteinIdentified proteinFromCatalog: proteinsFromCatalog) {
-                    proteinIdentification.getSynonyms().addAll(proteinFromCatalog.getSynonyms());
+                    proteinIdentification.setSynonyms(proteinFromCatalog.getSynonyms());
+                    proteinIdentification.setDescription(proteinFromCatalog.getDescription());
+                    proteinIdentification.setSequence(proteinFromCatalog.getSequence());
                 }
             } else { // if not present, we need to update the catalog
+                logger.debug("Protein " + proteinIdentification.getAccession() + " not in the Catalog - adding...");
                 List<ProteinIdentified> proteinsToCatalog = getAsCatalogProtein(proteinIdentifications);
                 this.proteinCatalogIndexService.save(proteinsToCatalog);
                 this.proteinCatalogDetailsIndexer.addSynonymsToProteins(proteinsToCatalog);
                 this.proteinCatalogDetailsIndexer.addDetailsToProteins(proteinsToCatalog);
                 // add details to identifications
                 proteinsFromCatalog = proteinCatalogSearchService.findBySynonyms(proteinIdentification.getAccession());
-                for (ProteinIdentified proteinFromCatalog: proteinsFromCatalog) {
-                    proteinIdentification.getSynonyms().addAll(proteinFromCatalog.getSynonyms());
+                if (proteinsFromCatalog != null && proteinsFromCatalog.size()>0) {
+                    logger.debug("Obtained " + proteinsFromCatalog.size() + " from the Catalog after saving");
+                    for (ProteinIdentified proteinFromCatalog : proteinsFromCatalog) {
+                        proteinIdentification.getSynonyms().addAll(proteinFromCatalog.getSynonyms());
+                        proteinIdentification.setDescription(proteinFromCatalog.getDescription());
+                        proteinIdentification.setSequence(proteinFromCatalog.getSequence());
+                    }
+                } else {
+                    logger.debug("Obtained NO protein from the Catalog after saving - there were problems!");
                 }
             }
         }
