@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.proteinidentificationindex.search.model;
 
 import org.apache.solr.client.solrj.beans.Field;
+import uk.ac.ebi.pride.archive.dataprovider.identification.ProteinIdentificationProvider;
 import uk.ac.ebi.pride.archive.dataprovider.identification.ProteinReferenceProvider;
 
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.Set;
  * @author Jose A. Dianes
  * @version $Id$
  */
-public class ProteinIdentification implements ProteinReferenceProvider {
+public class ProteinIdentification implements ProteinIdentificationProvider {
 
     @Field(ProteinIdentificationFields.ACCESSION)
     private String accession;
