@@ -39,19 +39,36 @@ public class ProjectProteinIdentificationsIndexer {
         this.proteinCatalogDetailsIndexer = proteinCatalogDetailsIndexer;
     }
 
-
+    @Deprecated
     public void indexAllProjectIdentificationsForProjectAndAssay(String projectAccession, String assayAccession, MZTabFile mzTabFile){
-        List<ProteinIdentified> proteinsFromFile = new LinkedList<ProteinIdentified>();
+        this.indexAllProteinIdentificationsForProjectAndAssay(projectAccession,assayAccession,mzTabFile);
+    }
 
-        long startTime;
-        long endTime;
-
-        startTime = System.currentTimeMillis();
+    public void indexAllProteinIdentificationsForProjectAndAssay(String projectAccession, String assayAccession, MZTabFile mzTabFile){
 
         // build Protein Identifications from mzTabFile
         try {
             if (mzTabFile != null) {
-                proteinsFromFile = ProteinBuilder.readProteinIdentificationsFromMzTabFile(assayAccession, mzTabFile);
+                List<ProteinIdentified> proteinsFromFile = ProteinBuilder.readProteinIdentificationsFromMzTabFile(assayAccession, mzTabFile);
+
+                logger.debug("Found " + proteinsFromFile.size() + " Protein Identifications "
+                        + " for PROJECT:" + projectAccession
+                        + " and ASSAY:" + assayAccession);
+
+                if (proteinsFromFile!=null && proteinsFromFile.size()>0) {
+                    // convert to identifications model
+                    List<ProteinIdentification> proteinIdentifications = getAsProteinIdentifications(proteinsFromFile, projectAccession, assayAccession);
+                    // add synonyms, details, etc
+                    addCatalogInfoToProteinIdentifications(proteinIdentifications);
+                    // save
+                    proteinIdentificationIndexService.save(proteinIdentifications);
+
+                    logger.debug("COMMITTED " + proteinsFromFile.size() +
+                            " Protein Identifications from PROJECT:" + projectAccession +
+                            " ASSAY:" + assayAccession);
+                }
+            } else {
+                logger.error("An empty mzTab file has been passed to the indexing method - no indexing took place");
             }
         } catch (Exception e) { // we need to recover from any exception when reading the mzTab file so the whole process can continue
             logger.error("Cannot get Protein Identifications from PROJECT:" + projectAccession + "and ASSAY:" + assayAccession );
@@ -59,50 +76,40 @@ public class ProjectProteinIdentificationsIndexer {
             e.printStackTrace();
         }
 
-        endTime = System.currentTimeMillis();
-        logger.info("Found " + proteinsFromFile.size() + " Protein Identifications "
-                + " for PROJECT:" + projectAccession
-                + " and ASSAY:" + assayAccession
-                + " in " + (double) (endTime - startTime) / 1000.0 + " seconds");
 
-        if (proteinsFromFile != null && proteinsFromFile.size()>0) {
-
-            startTime = System.currentTimeMillis();
-
-            // convert to identifications model
-            List<ProteinIdentification> proteinIdentifications = getAsProteinIdentifications(proteinsFromFile, projectAccession, assayAccession);
-            addSynonymsToProteinIdentifications(proteinIdentifications);
-
-            // save
-            proteinIdentificationIndexService.save(proteinIdentifications);
-            logger.debug("COMMITTED " + proteinsFromFile.size() +
-                    " Protein Identifications from PROJECT:" + projectAccession +
-                    " ASSAY:" + assayAccession);
-
-            endTime = System.currentTimeMillis();
-            logger.info("DONE indexing all Protein Identifications for project " + projectAccession + " in " + (double) (endTime - startTime) / 1000.0 + " seconds");
-        }
     }
 
     /**
-     * Use the protein Catalog to retrieve synonym information
+     * Deletes all protein identifications for a given project accession
      *
-     * @param proteinIdentifications
+     * @param projectAccession The accession that identifies the PRIDE Archive project
      */
-    private void addSynonymsToProteinIdentifications(List<ProteinIdentification> proteinIdentifications) {
+    public void deleteAllProteinIdentificationsForProject(String projectAccession) {
+        // search by project accession
+        List<ProteinIdentification> proteinIdentifications = this.proteinIdentificationSearchService.findByProjectAccession(projectAccession);
+        this.proteinIdentificationIndexService.delete(proteinIdentifications);
+    }
+
+    /**
+     * Use the protein Catalog to retrieve synonym information, protein details, etc.
+     *
+     * @param proteinIdentifications The list to be enriched with information from the Catalog
+     */
+    private void addCatalogInfoToProteinIdentifications(List<ProteinIdentification> proteinIdentifications) {
         for (ProteinIdentification proteinIdentification: proteinIdentifications) {
             proteinIdentification.setSynonyms(new TreeSet<String>());
+            proteinIdentification.setDescription(new LinkedList<String>());
             List<ProteinIdentified> proteinsFromCatalog = proteinCatalogSearchService.findBySynonyms(proteinIdentification.getAccession());
             if (proteinsFromCatalog != null && proteinsFromCatalog.size()>0) {
                 logger.debug("Protein " + proteinIdentification.getAccession() + " already in the Catalog - getting details...");
                 for (ProteinIdentified proteinFromCatalog: proteinsFromCatalog) {
-                    proteinIdentification.setSynonyms(proteinFromCatalog.getSynonyms());
-                    proteinIdentification.setDescription(proteinFromCatalog.getDescription());
+                    proteinIdentification.getSynonyms().addAll(proteinFromCatalog.getSynonyms());
+                    proteinIdentification.getDescription().addAll(proteinFromCatalog.getDescription());
                     proteinIdentification.setSequence(proteinFromCatalog.getSequence());
                 }
             } else { // if not present, we need to update the catalog
                 logger.debug("Protein " + proteinIdentification.getAccession() + " not in the Catalog - adding...");
-                List<ProteinIdentified> proteinsToCatalog = getAsCatalogProtein(proteinIdentifications);
+                List<ProteinIdentified> proteinsToCatalog = getAsCatalogProtein(proteinIdentification);
                 this.proteinCatalogIndexService.save(proteinsToCatalog);
                 this.proteinCatalogDetailsIndexer.addSynonymsToProteins(proteinsToCatalog);
                 this.proteinCatalogDetailsIndexer.addDetailsToProteins(proteinsToCatalog);
@@ -112,27 +119,25 @@ public class ProjectProteinIdentificationsIndexer {
                     logger.debug("Obtained " + proteinsFromCatalog.size() + " from the Catalog after saving");
                     for (ProteinIdentified proteinFromCatalog : proteinsFromCatalog) {
                         proteinIdentification.getSynonyms().addAll(proteinFromCatalog.getSynonyms());
-                        proteinIdentification.setDescription(proteinFromCatalog.getDescription());
+                        proteinIdentification.getDescription().addAll(proteinFromCatalog.getDescription());
                         proteinIdentification.setSequence(proteinFromCatalog.getSequence());
                     }
                 } else {
-                    logger.debug("Obtained NO protein from the Catalog after saving - there were problems!");
+                    logger.error("Obtained NO protein from the Catalog after saving - there were problems!");
                 }
             }
         }
     }
 
-    private Set<String> getAccessionSet(List<ProteinIdentified> proteinsFromFile) {
-
-        Set<String> res = new TreeSet<String>();
-
-        for (ProteinIdentified proteinIdentified: proteinsFromFile) {
-            res.add(proteinIdentified.getAccession());
-        }
-
-        return res;
-    }
-
+    /**
+     * This is a convenience method to convert from Catalog model to Protein Identification model. Basically adds
+     * project and assay accessions.
+     *
+     * @param proteinsIdentified The list of Catalog proteins
+     * @param projectAccession The accession that identifies the PRIDE Archive project
+     * @param assayAccession The accession that identifies the PRIDE Archive assay
+     * @return A list of protein identifications
+     */
     private List<ProteinIdentification> getAsProteinIdentifications(List<ProteinIdentified> proteinsIdentified, String projectAccession, String assayAccession) {
         if (proteinsIdentified != null) {
             List<ProteinIdentification> res = new LinkedList<ProteinIdentification>();
@@ -152,6 +157,24 @@ public class ProjectProteinIdentificationsIndexer {
         }
     }
 
+    /**
+     * This is a convenience method to convert from Protein Identification to Catalog model
+     *
+     * @param proteinIdentification The protein identification
+     * @return A list of protein Catalog proteins
+     */
+    private List<ProteinIdentified> getAsCatalogProtein(ProteinIdentification proteinIdentification) {
+        List<ProteinIdentification> pis = new LinkedList<ProteinIdentification>();
+        pis.add(proteinIdentification);
+        return getAsCatalogProtein(pis);
+    }
+
+    /**
+     * This is a convenience method to convert from Protein Identification to Catalog model
+     *
+     * @param proteinIdentifications The list of protein identifications
+     * @return A list of protein Catalog proteins
+     */
     private List<ProteinIdentified> getAsCatalogProtein(List<ProteinIdentification> proteinIdentifications) {
         if (proteinIdentifications != null) {
             List<ProteinIdentified> res = new LinkedList<ProteinIdentified>();
@@ -166,12 +189,6 @@ public class ProjectProteinIdentificationsIndexer {
         } else {
             return null;
         }
-    }
-
-    public void deleteAllProteinIdentificationsForProject(String projectAccession) {
-        // search by project accession
-        List<ProteinIdentification> proteinIdentifications = this.proteinIdentificationSearchService.findByProjectAccession(projectAccession);
-        this.proteinIdentificationIndexService.delete(proteinIdentifications);
     }
 
 }
