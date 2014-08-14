@@ -93,6 +93,7 @@
 
     <bean id="proteinCatalogIndexService" class="uk.ac.ebi.pride.proteinindex.search.search.service.ProteinIdentificationIndexService">
         <constructor-arg value="#{ solrProteinCatalogRepositoryFactory.create() }"/>
+        <constructor-arg ref="solrProteinCatalogServer"/>
     </bean>
 
     <bean id="proteinCatalogDetailsIndexer" class="uk.ac.ebi.pride.proteinindex.search.indexers.ProteinDetailsIndexer">

@@ -114,12 +114,12 @@ public class ProjectProteinIdentificationsIndexer {
                 this.proteinCatalogDetailsIndexer.addSynonymsToProteins(proteinsToCatalog);
                 this.proteinCatalogDetailsIndexer.addDetailsToProteins(proteinsToCatalog);
                 // add details to identifications
-                proteinsFromCatalog = proteinCatalogSearchService.findBySynonyms(proteinIdentification.getAccession());
+                proteinsFromCatalog = this.proteinCatalogSearchService.findBySynonyms(proteinIdentification.getAccession());
                 if (proteinsFromCatalog != null && proteinsFromCatalog.size()>0) {
                     logger.debug("Obtained " + proteinsFromCatalog.size() + " from the Catalog after saving");
                     for (ProteinIdentified proteinFromCatalog : proteinsFromCatalog) {
-                        proteinIdentification.getSynonyms().addAll(proteinFromCatalog.getSynonyms());
-                        proteinIdentification.getDescription().addAll(proteinFromCatalog.getDescription());
+                        if (proteinFromCatalog.getSynonyms()!=null) proteinIdentification.getSynonyms().addAll(proteinFromCatalog.getSynonyms());
+                        if (proteinFromCatalog.getDescription()!=null) proteinIdentification.getDescription().addAll(proteinFromCatalog.getDescription());
                         proteinIdentification.setSequence(proteinFromCatalog.getSequence());
                     }
                 } else {
