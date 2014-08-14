@@ -56,7 +56,7 @@ public class ProjectProteinIdentificationsIndexer {
                         + " and ASSAY:" + assayAccession);
 
                 if (proteinsFromFile!=null && proteinsFromFile.size()>0) {
-                    // convert to identifications model
+                    // convert to identifications model - TODO: change the reader to get identifications instead of catalog proteins
                     List<ProteinIdentification> proteinIdentifications = getAsProteinIdentifications(proteinsFromFile, projectAccession, assayAccession);
                     // add synonyms, details, etc
                     addCatalogInfoToProteinIdentifications(proteinIdentifications);
@@ -70,8 +70,8 @@ public class ProjectProteinIdentificationsIndexer {
             } else {
                 logger.error("An empty mzTab file has been passed to the indexing method - no indexing took place");
             }
-        } catch (Exception e) { // we need to recover from any exception when reading the mzTab file so the whole process can continue
-            logger.error("Cannot get Protein Identifications from PROJECT:" + projectAccession + "and ASSAY:" + assayAccession );
+        } catch (Exception e) {
+            logger.error("Cannot index Protein Identifications from PROJECT:" + projectAccession + " and ASSAY:" + assayAccession );
             logger.error("Reason: ");
             e.printStackTrace();
         }
@@ -103,24 +103,18 @@ public class ProjectProteinIdentificationsIndexer {
             if (proteinsFromCatalog != null && proteinsFromCatalog.size()>0) {
                 logger.debug("Protein " + proteinIdentification.getAccession() + " already in the Catalog - getting details...");
                 for (ProteinIdentified proteinFromCatalog: proteinsFromCatalog) {
-                    proteinIdentification.getSynonyms().addAll(proteinFromCatalog.getSynonyms());
-                    proteinIdentification.getDescription().addAll(proteinFromCatalog.getDescription());
-                    proteinIdentification.setSequence(proteinFromCatalog.getSequence());
+                    updateProteinIdentification(proteinIdentification,proteinFromCatalog);
                 }
             } else { // if not present, we need to update the catalog
                 logger.debug("Protein " + proteinIdentification.getAccession() + " not in the Catalog - adding...");
                 List<ProteinIdentified> proteinsToCatalog = getAsCatalogProtein(proteinIdentification);
-                this.proteinCatalogIndexService.save(proteinsToCatalog);
-                this.proteinCatalogDetailsIndexer.addSynonymsToProteins(proteinsToCatalog);
-                this.proteinCatalogDetailsIndexer.addDetailsToProteins(proteinsToCatalog);
+                saveProteinsToCatalog(proteinsToCatalog);
                 // add details to identifications
                 proteinsFromCatalog = this.proteinCatalogSearchService.findBySynonyms(proteinIdentification.getAccession());
                 if (proteinsFromCatalog != null && proteinsFromCatalog.size()>0) {
                     logger.debug("Obtained " + proteinsFromCatalog.size() + " from the Catalog after saving");
                     for (ProteinIdentified proteinFromCatalog : proteinsFromCatalog) {
-                        if (proteinFromCatalog.getSynonyms()!=null) proteinIdentification.getSynonyms().addAll(proteinFromCatalog.getSynonyms());
-                        if (proteinFromCatalog.getDescription()!=null) proteinIdentification.getDescription().addAll(proteinFromCatalog.getDescription());
-                        proteinIdentification.setSequence(proteinFromCatalog.getSequence());
+                        updateProteinIdentification(proteinIdentification, proteinFromCatalog);
                     }
                 } else {
                     logger.error("Obtained NO protein from the Catalog after saving - there were problems!");
@@ -190,5 +184,22 @@ public class ProjectProteinIdentificationsIndexer {
             return null;
         }
     }
+
+    /**
+     * Save proteins into the catalog, including adding synonyms and details
+     * @param proteinsToCatalog
+     */
+    private void saveProteinsToCatalog(List<ProteinIdentified> proteinsToCatalog) {
+        this.proteinCatalogIndexService.save(proteinsToCatalog);
+        this.proteinCatalogDetailsIndexer.addSynonymsToProteins(proteinsToCatalog);
+        this.proteinCatalogDetailsIndexer.addDetailsToProteins(proteinsToCatalog);
+    }
+
+    private void updateProteinIdentification(ProteinIdentification proteinIdentification, ProteinIdentified proteinFromCatalog) {
+        if (proteinFromCatalog.getSynonyms() != null) proteinIdentification.getSynonyms().addAll(proteinFromCatalog.getSynonyms());
+        if (proteinFromCatalog.getDescription() != null) proteinIdentification.getDescription().addAll(proteinFromCatalog.getDescription());
+        proteinIdentification.setSequence(proteinFromCatalog.getSequence());
+    }
+
 
 }
