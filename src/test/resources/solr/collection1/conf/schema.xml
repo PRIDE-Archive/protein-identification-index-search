@@ -99,6 +99,7 @@
 
         <!-- identifier for each document: the protein accession -->
         <field name="id" type="string" indexed="true" stored="true" required="true" multiValued="false"/>
+        <field name="accession" type="string" indexed="true" stored="true" required="true" multiValued="false"/>
         <field name="synonyms" type="text_ws" indexed="true" stored="true" required="false" multiValued="true"/>
         <field name="project_accession" type="string" indexed="true" stored="true" required="false" multiValued="false" />
         <field name="assay_accession" type="string" indexed="true" stored="true" required="false" multiValued="false" />
