@@ -9,7 +9,6 @@ import org.springframework.data.solr.UncategorizedSolrException;
 import org.springframework.stereotype.Service;
 import uk.ac.ebi.pride.proteinidentificationindex.search.model.ProteinIdentification;
 import uk.ac.ebi.pride.proteinidentificationindex.search.service.repository.SolrProteinIdentificationRepository;
-import uk.ac.ebi.pride.proteinindex.search.model.ProteinIdentified;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -30,12 +29,12 @@ public class ProteinIdentificationIndexService {
     private static final int SECONDS_TO_WAIT = 30;
     private static final long MAX_ELAPSED_TIME_PING_QUERY = 10000;
 
-    private SolrServer proteinCatalogServer;
+    private SolrServer proteinIdentificationServer;
 
     private SolrProteinIdentificationRepository solrProteinIdentificationRepository;
 
-    public ProteinIdentificationIndexService(SolrServer proteinCatalogServer, SolrProteinIdentificationRepository solrProteinIdentificationRepository) {
-        this.proteinCatalogServer = proteinCatalogServer;
+    public ProteinIdentificationIndexService(SolrServer proteinIdentificationServer, SolrProteinIdentificationRepository solrProteinIdentificationRepository) {
+        this.proteinIdentificationServer = proteinIdentificationServer;
         this.solrProteinIdentificationRepository = solrProteinIdentificationRepository;
     }
 
@@ -55,10 +54,10 @@ public class ProteinIdentificationIndexService {
             boolean succeed = false;
             while (numTries < NUM_TRIES && !succeed) {
                 try {
-                    SolrPingResponse pingResponse = this.proteinCatalogServer.ping();
+                    SolrPingResponse pingResponse = this.proteinIdentificationServer.ping();
                     if ((pingResponse.getStatus() == 0) && pingResponse.getElapsedTime() < MAX_ELAPSED_TIME_PING_QUERY) {
-                        this.proteinCatalogServer.addBeans(proteinIdentifications);
-                        this.proteinCatalogServer.commit();
+                        this.proteinIdentificationServer.addBeans(proteinIdentifications);
+                        this.proteinIdentificationServer.commit();
                         succeed = true;
                     } else {
                         logger.error("[TRY " + numTries + " Solr server too busy!");

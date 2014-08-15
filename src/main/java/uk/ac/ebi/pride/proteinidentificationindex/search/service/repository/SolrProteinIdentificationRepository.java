@@ -18,11 +18,17 @@ import java.util.List;
 public interface SolrProteinIdentificationRepository extends SolrCrudRepository<ProteinIdentification, String> {
 
 
-    // Accession query methods
+    // Id query methods
     @Query("id:?0")
     List<ProteinIdentification> findById(String id);
-    @Query("id:?0")
+    @Query("id:(?0)")
     List<ProteinIdentification> findByIdIn(Collection<String> id);
+
+    // Accession query methods
+    @Query("accession:?0")
+    List<ProteinIdentification> findByAccession(String accession);
+    @Query("accession:(?0)")
+    List<ProteinIdentification> findByAccessionIn(Collection<String> accession);
 
     // Project accession query methods
     @Query("project_accession:?0")

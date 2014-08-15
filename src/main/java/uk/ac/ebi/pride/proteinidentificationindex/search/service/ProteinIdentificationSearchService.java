@@ -29,13 +29,22 @@ public class ProteinIdentificationSearchService {
         this.solrProteinIdentificationRepository = solrProteinIdentificationRepository;
     }
 
-    // find by accession methods
+    // find by id methods
     public List<ProteinIdentification> findById(String id) {
         return solrProteinIdentificationRepository.findById(id);
     }
 
     public List<ProteinIdentification> findById(Collection<String> ids) {
         return solrProteinIdentificationRepository.findByIdIn(ids);
+    }
+
+    // find by accession methods
+    public List<ProteinIdentification> findByAccession(String accession) {
+        return solrProteinIdentificationRepository.findByAccession(accession);
+    }
+
+    public List<ProteinIdentification> findByAccession(Collection<String> accessions) {
+        return solrProteinIdentificationRepository.findByAccessionIn(accessions);
     }
 
     // Project accession query methods
