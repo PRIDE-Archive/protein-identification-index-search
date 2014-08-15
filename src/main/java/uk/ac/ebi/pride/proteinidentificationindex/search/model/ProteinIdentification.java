@@ -13,6 +13,9 @@ import java.util.Set;
  */
 public class ProteinIdentification implements ProteinIdentificationProvider {
 
+    @Field(ProteinIdentificationFields.ID)
+    private String id;
+
     @Field(ProteinIdentificationFields.ACCESSION)
     private String accession;
 
@@ -30,6 +33,14 @@ public class ProteinIdentification implements ProteinIdentificationProvider {
 
     @Field(ProteinIdentificationFields.DESCRIPTION)
     private List<String> description;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getAccession() {
         return accession;
