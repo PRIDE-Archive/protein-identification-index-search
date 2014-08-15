@@ -4,8 +4,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.jmztab.model.MZTabFile;
 import uk.ac.ebi.pride.proteinidentificationindex.search.model.ProteinIdentification;
+import uk.ac.ebi.pride.proteinidentificationindex.search.model.ProteinIdentificationIdBuilder;
 import uk.ac.ebi.pride.proteinidentificationindex.search.service.ProteinIdentificationIndexService;
 import uk.ac.ebi.pride.proteinidentificationindex.search.service.ProteinIdentificationSearchService;
+import uk.ac.ebi.pride.proteinidentificationindex.search.tools.ProteinIdentificationIndexBuilder;
 import uk.ac.ebi.pride.proteinindex.search.indexers.ProteinDetailsIndexer;
 import uk.ac.ebi.pride.proteinindex.search.model.ProteinIdentified;
 import uk.ac.ebi.pride.proteinindex.search.util.ProteinBuilder;
@@ -41,7 +43,7 @@ public class ProjectProteinIdentificationsIndexer {
 
     @Deprecated
     public void indexAllProjectIdentificationsForProjectAndAssay(String projectAccession, String assayAccession, MZTabFile mzTabFile){
-        this.indexAllProteinIdentificationsForProjectAndAssay(projectAccession,assayAccession,mzTabFile);
+        this.indexAllProteinIdentificationsForProjectAndAssay(projectAccession, assayAccession, mzTabFile);
     }
 
     public void indexAllProteinIdentificationsForProjectAndAssay(String projectAccession, String assayAccession, MZTabFile mzTabFile){
@@ -137,6 +139,7 @@ public class ProjectProteinIdentificationsIndexer {
             List<ProteinIdentification> res = new LinkedList<ProteinIdentification>();
             for (ProteinIdentified proteinIdentified: proteinsIdentified) {
                 ProteinIdentification newPI = new ProteinIdentification();
+                newPI.setId(ProteinIdentificationIdBuilder.getId(proteinIdentified.getAccession(), projectAccession, assayAccession));
                 newPI.setAccession(proteinIdentified.getAccession());
                 newPI.setProjectAccession(projectAccession);
                 newPI.setAssayAccession(assayAccession);

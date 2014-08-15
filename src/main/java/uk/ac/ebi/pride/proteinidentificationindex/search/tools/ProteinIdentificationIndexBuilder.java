@@ -117,7 +117,7 @@ public class ProteinIdentificationIndexBuilder {
                             logger.debug("Creating parser for MzTab file " + pathToMzTabFile);
                             mzTabFileParser = new MZTabFileParser(new File(pathToMzTabFile), errorLogOutputStream);
                             MZTabFile mzTabFile = mzTabFileParser.getMZTabFile();
-                            projectProteinIdentificationsIndexer.indexAllProjectIdentificationsForProjectAndAssay(project.getAccession(), assayAccession, mzTabFile);
+                            projectProteinIdentificationsIndexer.indexAllProteinIdentificationsForProjectAndAssay(project.getAccession(), assayAccession, mzTabFile);
                         } catch (Exception e) {
                             logger.error("Could not process MzTab file: " + pathToMzTabFile);
                             logger.error("Cause: " + e.getCause());
