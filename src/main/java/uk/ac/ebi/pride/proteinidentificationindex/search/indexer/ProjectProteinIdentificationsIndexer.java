@@ -6,9 +6,9 @@ import uk.ac.ebi.pride.jmztab.model.MZTabFile;
 import uk.ac.ebi.pride.proteinidentificationindex.search.model.ProteinIdentification;
 import uk.ac.ebi.pride.proteinidentificationindex.search.service.ProteinIdentificationIndexService;
 import uk.ac.ebi.pride.proteinidentificationindex.search.service.ProteinIdentificationSearchService;
+import uk.ac.ebi.pride.proteinidentificationindex.search.util.ProteinIdentificationMzTabBuilder;
 import uk.ac.ebi.pride.proteinindex.search.indexers.ProteinDetailsIndexer;
 import uk.ac.ebi.pride.proteinindex.search.model.ProteinIdentified;
-import uk.ac.ebi.pride.proteinidentificationindex.search.util.ProteinBuilder;
 
 import java.util.*;
 
@@ -49,7 +49,7 @@ public class ProjectProteinIdentificationsIndexer {
         // build Protein Identifications from mzTabFile
         try {
             if (mzTabFile != null) {
-                List<ProteinIdentification> proteinsFromFile = ProteinBuilder.readProteinIdentificationsFromMzTabFile(projectAccession, assayAccession, mzTabFile);
+                List<ProteinIdentification> proteinsFromFile = ProteinIdentificationMzTabBuilder.readProteinIdentificationsFromMzTabFile(projectAccession, assayAccession, mzTabFile);
 
                 logger.debug("Found " + proteinsFromFile.size() + " Protein Identifications "
                         + " for PROJECT:" + projectAccession

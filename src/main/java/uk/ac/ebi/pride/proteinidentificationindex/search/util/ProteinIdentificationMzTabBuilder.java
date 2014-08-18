@@ -17,7 +17,7 @@ import java.util.*;
  * @author Jose A. Dianes
  * @version $Id$
  */
-public class ProteinBuilder {
+public class ProteinIdentificationMzTabBuilder {
 
     private static final int PROCESSING_ACCESSIONS_STEP = 50;
     private static Logger logger = LoggerFactory.getLogger(uk.ac.ebi.pride.proteinindex.search.util.ProteinBuilder.class.getName());
@@ -62,58 +62,6 @@ public class ProteinBuilder {
         }
 
         return res;
-    }
-
-    public static void addProteinDetails(List<ProteinIdentified> proteins) {
-        // build accession list to reduce the number of fetching requests
-        List<String> accessions = new LinkedList<String>();
-        for (ProteinIdentified protein: proteins) {
-            accessions.add(protein.getAccession());
-        }
-        try {
-            // get protein details (e.g. sequence, name)
-            ProteinDetailFetcher proteinDetailFetcher = new ProteinDetailFetcher();
-
-            HashMap<String, uk.ac.ebi.pride.tools.protein_details_fetcher.model.Protein> details = new HashMap<String, uk.ac.ebi.pride.tools.protein_details_fetcher.model.Protein>();
-
-            int processedAccessions = 0;
-            while (processedAccessions<accessions.size()) {
-                // logging accessions
-                String accessionListLog = new String();
-                for (String accession: accessions.subList(processedAccessions, Math.min(accessions.size(),processedAccessions+PROCESSING_ACCESSIONS_STEP))) {
-                    accessionListLog = accessionListLog + " <" + accession +">";
-                }
-                logger.debug("accession list is: " + accessionListLog);
-
-                details.putAll(
-                        proteinDetailFetcher.getProteinDetails(
-                                accessions.subList(processedAccessions, Math.min(accessions.size(),processedAccessions+PROCESSING_ACCESSIONS_STEP))
-                        )
-                );
-
-                logger.debug("Processed accessions: " + processedAccessions + " of " + accessions.size());
-                logger.debug("Next step: " + (processedAccessions + PROCESSING_ACCESSIONS_STEP));
-                logger.debug("Got details for up to " + details.size() + " accessions (cumulative)");
-
-                processedAccessions = processedAccessions+PROCESSING_ACCESSIONS_STEP;
-            }
-
-
-            // add details to proteins
-            for (ProteinIdentified protein: proteins) {
-                if (details.containsKey(protein.getAccession())) {
-                    if (details.get(protein.getAccession()).getSequenceString() != null) {
-                        protein.setSequence(details.get(protein.getAccession()).getSequenceString());
-                    }
-                    if (details.get(protein.getAccession()).getName() != null) {
-                        protein.setDescription(Arrays.asList(ProteinDetailUtils.NAME + details.get(protein.getAccession()).getName()));
-                    }
-                }
-            }
-        } catch (Exception e) {
-            logger.error("Cannot retrieve protein details for " + accessions.size() + " accessions.");
-            e.printStackTrace();
-        }
     }
 
     private static String getCorrectedAccession(String accession, String database) {
