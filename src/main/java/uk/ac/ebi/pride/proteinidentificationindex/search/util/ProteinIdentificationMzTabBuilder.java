@@ -5,10 +5,6 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.jmztab.model.MZTabFile;
 import uk.ac.ebi.pride.jmztab.model.Protein;
 import uk.ac.ebi.pride.proteinidentificationindex.search.model.ProteinIdentification;
-import uk.ac.ebi.pride.proteinindex.search.model.ProteinIdentified;
-import uk.ac.ebi.pride.proteinindex.search.util.ErrorLogOutputStream;
-import uk.ac.ebi.pride.proteinindex.search.util.ProteinDetailUtils;
-import uk.ac.ebi.pride.tools.protein_details_fetcher.ProteinDetailFetcher;
 import uk.ac.ebi.pride.tools.utils.AccessionResolver;
 
 import java.util.*;
@@ -19,11 +15,7 @@ import java.util.*;
  */
 public class ProteinIdentificationMzTabBuilder {
 
-    private static final int PROCESSING_ACCESSIONS_STEP = 50;
     private static Logger logger = LoggerFactory.getLogger(uk.ac.ebi.pride.proteinindex.search.util.ProteinBuilder.class.getName());
-
-    private static ErrorLogOutputStream errorLogOutputStream = new ErrorLogOutputStream(logger);
-
 
     public static List<ProteinIdentification> readProteinIdentificationsFromMzTabFile(String projectAccession, String assayAccession, MZTabFile tabFile) {
 
