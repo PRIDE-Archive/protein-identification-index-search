@@ -7,10 +7,12 @@ package uk.ac.ebi.pride.proteinidentificationindex.search.model;
  */
 public class ProteinIdentificationFields {
     public static final String ID = "id";
+    public static final String SUBMITTED_ACCESSION = "submitted_accession";
     public static final String ACCESSION = "accession";
     public static final String SYNONYMS = "synonyms";
     public static final String PROJECT_ACCESSION = "project_accession";
     public static final String ASSAY_ACCESSION = "assay_accession";
     public static final String SEQUENCE = "sequence";
     public static final String DESCRIPTION = "description";
+    public static final String AMBIGUITY_GROUP = "ambiguity_group";
 }

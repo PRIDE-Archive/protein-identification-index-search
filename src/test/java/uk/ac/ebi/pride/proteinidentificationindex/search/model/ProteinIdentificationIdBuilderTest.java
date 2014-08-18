@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.proteinidentificationindex.search.model;
 
 import org.junit.Test;
+import uk.ac.ebi.pride.proteinidentificationindex.search.util.ProteinIdentificationIdBuilder;
 
 import static junit.framework.Assert.assertEquals;
 

@@ -2,7 +2,6 @@ package uk.ac.ebi.pride.proteinidentificationindex.search.model;
 
 import org.apache.solr.client.solrj.beans.Field;
 import uk.ac.ebi.pride.archive.dataprovider.identification.ProteinIdentificationProvider;
-import uk.ac.ebi.pride.archive.dataprovider.identification.ProteinReferenceProvider;
 
 import java.util.List;
 import java.util.Set;
@@ -15,6 +14,9 @@ public class ProteinIdentification implements ProteinIdentificationProvider {
 
     @Field(ProteinIdentificationFields.ID)
     private String id;
+
+    @Field(ProteinIdentificationFields.SUBMITTED_ACCESSION)
+    private String submittedAccession;
 
     @Field(ProteinIdentificationFields.ACCESSION)
     private String accession;
@@ -34,12 +36,23 @@ public class ProteinIdentification implements ProteinIdentificationProvider {
     @Field(ProteinIdentificationFields.DESCRIPTION)
     private List<String> description;
 
+    @Field(ProteinIdentificationFields.AMBIGUITY_GROUP)
+    private List<String> ambiguityGroup;
+
     public String getId() {
         return id;
     }
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getSubmittedAccession() {
+        return submittedAccession;
+    }
+
+    public void setSubmittedAccession(String submittedAccession) {
+        this.submittedAccession = submittedAccession;
     }
 
     public String getAccession() {
@@ -90,4 +103,11 @@ public class ProteinIdentification implements ProteinIdentificationProvider {
         this.description = description;
     }
 
+    public List<String> getAmbiguityGroup() {
+        return ambiguityGroup;
+    }
+
+    public void setAmbiguityGroup(List<String> ambiguityGroup) {
+        this.ambiguityGroup = ambiguityGroup;
+    }
 }

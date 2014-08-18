@@ -1,4 +1,4 @@
-package uk.ac.ebi.pride.proteinidentificationindex.search.model;
+package uk.ac.ebi.pride.proteinidentificationindex.search.util;
 
 /**
  * @author Jose A. Dianes

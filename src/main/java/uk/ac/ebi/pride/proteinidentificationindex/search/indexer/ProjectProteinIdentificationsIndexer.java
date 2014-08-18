@@ -4,13 +4,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.jmztab.model.MZTabFile;
 import uk.ac.ebi.pride.proteinidentificationindex.search.model.ProteinIdentification;
-import uk.ac.ebi.pride.proteinidentificationindex.search.model.ProteinIdentificationIdBuilder;
 import uk.ac.ebi.pride.proteinidentificationindex.search.service.ProteinIdentificationIndexService;
 import uk.ac.ebi.pride.proteinidentificationindex.search.service.ProteinIdentificationSearchService;
-import uk.ac.ebi.pride.proteinidentificationindex.search.tools.ProteinIdentificationIndexBuilder;
 import uk.ac.ebi.pride.proteinindex.search.indexers.ProteinDetailsIndexer;
 import uk.ac.ebi.pride.proteinindex.search.model.ProteinIdentified;
-import uk.ac.ebi.pride.proteinindex.search.util.ProteinBuilder;
+import uk.ac.ebi.pride.proteinidentificationindex.search.util.ProteinBuilder;
 
 import java.util.*;
 
@@ -51,19 +49,17 @@ public class ProjectProteinIdentificationsIndexer {
         // build Protein Identifications from mzTabFile
         try {
             if (mzTabFile != null) {
-                List<ProteinIdentified> proteinsFromFile = ProteinBuilder.readProteinIdentificationsFromMzTabFile(assayAccession, mzTabFile);
+                List<ProteinIdentification> proteinsFromFile = ProteinBuilder.readProteinIdentificationsFromMzTabFile(projectAccession, assayAccession, mzTabFile);
 
                 logger.debug("Found " + proteinsFromFile.size() + " Protein Identifications "
                         + " for PROJECT:" + projectAccession
                         + " and ASSAY:" + assayAccession);
 
                 if (proteinsFromFile!=null && proteinsFromFile.size()>0) {
-                    // convert to identifications model - TODO: change the reader to get identifications instead of catalog proteins
-                    List<ProteinIdentification> proteinIdentifications = getAsProteinIdentifications(proteinsFromFile, projectAccession, assayAccession);
                     // add synonyms, details, etc
-                    addCatalogInfoToProteinIdentifications(proteinIdentifications);
+                    addCatalogInfoToProteinIdentifications(proteinsFromFile);
                     // save
-                    proteinIdentificationIndexService.save(proteinIdentifications);
+                    proteinIdentificationIndexService.save(proteinsFromFile);
 
                     logger.debug("COMMITTED " + proteinsFromFile.size() +
                             " Protein Identifications from PROJECT:" + projectAccession +
@@ -77,7 +73,6 @@ public class ProjectProteinIdentificationsIndexer {
             logger.error("Reason: ");
             e.printStackTrace();
         }
-
 
     }
 
@@ -122,35 +117,6 @@ public class ProjectProteinIdentificationsIndexer {
                     logger.error("Obtained NO protein from the Catalog after saving - there were problems!");
                 }
             }
-        }
-    }
-
-    /**
-     * This is a convenience method to convert from Catalog model to Protein Identification model. Basically adds
-     * project and assay accessions.
-     *
-     * @param proteinsIdentified The list of Catalog proteins
-     * @param projectAccession The accession that identifies the PRIDE Archive project
-     * @param assayAccession The accession that identifies the PRIDE Archive assay
-     * @return A list of protein identifications
-     */
-    private List<ProteinIdentification> getAsProteinIdentifications(List<ProteinIdentified> proteinsIdentified, String projectAccession, String assayAccession) {
-        if (proteinsIdentified != null) {
-            List<ProteinIdentification> res = new LinkedList<ProteinIdentification>();
-            for (ProteinIdentified proteinIdentified: proteinsIdentified) {
-                ProteinIdentification newPI = new ProteinIdentification();
-                newPI.setId(ProteinIdentificationIdBuilder.getId(proteinIdentified.getAccession(), projectAccession, assayAccession));
-                newPI.setAccession(proteinIdentified.getAccession());
-                newPI.setProjectAccession(projectAccession);
-                newPI.setAssayAccession(assayAccession);
-                newPI.setSequence(proteinIdentified.getSequence());
-                newPI.setSynonyms(proteinIdentified.getSynonyms());
-                newPI.setDescription(proteinIdentified.getDescription());
-                res.add(newPI);
-            }
-            return res;
-        } else {
-            return null;
         }
     }
 
