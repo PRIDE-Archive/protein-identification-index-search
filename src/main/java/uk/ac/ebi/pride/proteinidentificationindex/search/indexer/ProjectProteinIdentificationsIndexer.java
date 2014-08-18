@@ -101,7 +101,7 @@ public class ProjectProteinIdentificationsIndexer {
         for (ProteinIdentification proteinIdentification: proteinIdentifications) {
             proteinIdentification.setSynonyms(new TreeSet<String>());
             proteinIdentification.setDescription(new LinkedList<String>());
-            List<ProteinIdentified> proteinsFromCatalog = proteinCatalogSearchService.findBySynonyms(proteinIdentification.getAccession());
+            List<ProteinIdentified> proteinsFromCatalog = proteinCatalogSearchService.findByAccession(proteinIdentification.getAccession());
             if (proteinsFromCatalog != null && proteinsFromCatalog.size()>0) {
                 logger.debug("Protein " + proteinIdentification.getAccession() + " already in the Catalog - getting details...");
                 for (ProteinIdentified proteinFromCatalog: proteinsFromCatalog) {
@@ -112,7 +112,7 @@ public class ProjectProteinIdentificationsIndexer {
                 List<ProteinIdentified> proteinsToCatalog = getAsCatalogProtein(proteinIdentification);
                 saveProteinsToCatalog(proteinsToCatalog);
                 // add details to identifications
-                proteinsFromCatalog = this.proteinCatalogSearchService.findBySynonyms(proteinIdentification.getAccession());
+                proteinsFromCatalog = this.proteinCatalogSearchService.findByAccession(proteinIdentification.getAccession());
                 if (proteinsFromCatalog != null && proteinsFromCatalog.size()>0) {
                     logger.debug("Obtained " + proteinsFromCatalog.size() + " from the Catalog after saving");
                     for (ProteinIdentified proteinFromCatalog : proteinsFromCatalog) {
