@@ -39,6 +39,9 @@ public class ProteinBuilder {
                 proteinIdentification.setSubmittedAccession(mzTabProtein.getAccession());
                 proteinIdentification.setAssayAccession(assayAccession);
                 proteinIdentification.setProjectAccession(projectAccession);
+                proteinIdentification.setAmbiguityGroupSubmittedAccessions(new LinkedList<String>());
+                proteinIdentification.getAmbiguityGroupSubmittedAccessions().addAll(mzTabProtein.getAmbiguityMembers());
+                // try to add a resolved accession to reference the catalog
                 try {
                     String correctedAccession = getCorrectedAccession(mzTabProtein.getAccession(), mzTabProtein.getDatabase());
                     proteinIdentification.setAccession(correctedAccession);
@@ -48,6 +51,7 @@ public class ProteinBuilder {
                     logger.error("Cause:" + e.getCause());
                     proteinIdentification.setAccession(mzTabProtein.getAccession());
                 }
+                // add to final result
                 res.add(proteinIdentification);
 
             }

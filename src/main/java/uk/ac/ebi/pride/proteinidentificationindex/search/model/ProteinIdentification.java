@@ -37,7 +37,7 @@ public class ProteinIdentification implements ProteinIdentificationProvider {
     private List<String> description;
 
     @Field(ProteinIdentificationFields.AMBIGUITY_GROUP)
-    private List<String> ambiguityGroup;
+    private List<String> ambiguityGroupSubmittedAccessions;
 
     public String getId() {
         return id;
@@ -103,11 +103,11 @@ public class ProteinIdentification implements ProteinIdentificationProvider {
         this.description = description;
     }
 
-    public List<String> getAmbiguityGroup() {
-        return ambiguityGroup;
+    public List<String> getAmbiguityGroupSubmittedAccessions() {
+        return ambiguityGroupSubmittedAccessions;
     }
 
-    public void setAmbiguityGroup(List<String> ambiguityGroup) {
-        this.ambiguityGroup = ambiguityGroup;
+    public void setAmbiguityGroupSubmittedAccessions(List<String> ambiguityGroupSubmittedAccessions) {
+        this.ambiguityGroupSubmittedAccessions = ambiguityGroupSubmittedAccessions;
     }
 }
