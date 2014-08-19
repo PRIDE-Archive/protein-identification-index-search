@@ -93,31 +93,39 @@ public class ProjectProteinIdentificationsIndexer {
      * @param proteinIdentifications The list to be enriched with information from the Catalog
      */
     private void addCatalogInfoToProteinIdentifications(List<ProteinIdentification> proteinIdentifications) {
+        List<ProteinIdentified> proteinsToCatalog = new LinkedList<ProteinIdentified>();
+
+        // a first round, will identify new proteins for the catalog
+        // we do it this way, since we want to save to the catalog in batches (to improve performance)
+        // if we process identifications and catalog at the same time, we have to save to the catalog once by one
+        for (ProteinIdentification proteinIdentification: proteinIdentifications) {
+            List<ProteinIdentified> proteinsFromCatalog = proteinCatalogSearchService.findByAccession(proteinIdentification.getAccession());
+            if (proteinsFromCatalog == null || proteinsFromCatalog.size() == 0) {
+                logger.debug("Protein " + proteinIdentification.getAccession() + " not in the Catalog - adding...");
+                proteinsToCatalog.addAll(getAsCatalogProtein(proteinIdentification));
+            }
+        }
+
+        // if it happened that there were new proteins to the catalog, we need to save them (in batch)
+        if (proteinsToCatalog.size()>0) {
+            saveProteinsToCatalog(proteinsToCatalog);
+        }
+
+        // now we are save to assume that the catalog contains all the identified proteins
         for (ProteinIdentification proteinIdentification: proteinIdentifications) {
             proteinIdentification.setSynonyms(new TreeSet<String>());
             proteinIdentification.setDescription(new LinkedList<String>());
             List<ProteinIdentified> proteinsFromCatalog = proteinCatalogSearchService.findByAccession(proteinIdentification.getAccession());
-            if (proteinsFromCatalog != null && proteinsFromCatalog.size()>0) {
+            if (proteinsFromCatalog != null && proteinsFromCatalog.size() > 0) {
                 logger.debug("Protein " + proteinIdentification.getAccession() + " already in the Catalog - getting details...");
-                for (ProteinIdentified proteinFromCatalog: proteinsFromCatalog) {
-                    updateProteinIdentification(proteinIdentification,proteinFromCatalog);
+                for (ProteinIdentified proteinFromCatalog : proteinsFromCatalog) {
+                    updateProteinIdentification(proteinIdentification, proteinFromCatalog);
                 }
-            } else { // if not present, we need to update the catalog
-                logger.debug("Protein " + proteinIdentification.getAccession() + " not in the Catalog - adding...");
-                List<ProteinIdentified> proteinsToCatalog = getAsCatalogProtein(proteinIdentification);
-                saveProteinsToCatalog(proteinsToCatalog);
-                // add details to identifications
-                proteinsFromCatalog = this.proteinCatalogSearchService.findByAccession(proteinIdentification.getAccession());
-                if (proteinsFromCatalog != null && proteinsFromCatalog.size()>0) {
-                    logger.debug("Obtained " + proteinsFromCatalog.size() + " from the Catalog after saving");
-                    for (ProteinIdentified proteinFromCatalog : proteinsFromCatalog) {
-                        updateProteinIdentification(proteinIdentification, proteinFromCatalog);
-                    }
-                } else {
-                    logger.error("Obtained NO protein from the Catalog after saving - there were problems!");
-                }
+            } else { // if not present, there were errors...
+                logger.error("Protein " + proteinIdentification.getId() + " not in the catalog - It should be saved by now...");
             }
         }
+
     }
 
     /**
