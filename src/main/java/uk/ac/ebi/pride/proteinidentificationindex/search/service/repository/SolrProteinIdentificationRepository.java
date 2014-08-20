@@ -30,6 +30,10 @@ public interface SolrProteinIdentificationRepository extends SolrCrudRepository<
     @Query("accession:(?0)")
     List<ProteinIdentification> findByAccessionIn(Collection<String> accession);
 
+    // Synonym query methods
+    @Query("synonyms:?0 AND project_accession:?1")
+    List<ProteinIdentification> findBySynonymAndProjectAccession(String synonym, String projectAccession);
+
     // Project accession query methods
     @Query("project_accession:?0")
     List<ProteinIdentification> findByProjectAccession(String projectAccession);
@@ -49,5 +53,10 @@ public interface SolrProteinIdentificationRepository extends SolrCrudRepository<
     Page<ProteinIdentification> findByAssayAccession(String assayAccession, Pageable pageable);
     @Query("assay_accession:(?0)")
     Page<ProteinIdentification> findByAssayAccessionIn(Collection<String> assayAccessions, Pageable pageable);
+
+    // Submitted accession query methods
+    @Query("submitted_accession:?0 AND assay_accession:?0")
+    List<ProteinIdentification> findBySubmittedAccessionAndAssayAccession(String submitedAccession, String assayAccession);
+
 
 }

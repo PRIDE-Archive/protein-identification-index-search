@@ -38,6 +38,11 @@ public class ProteinIdentificationSearchService {
         return solrProteinIdentificationRepository.findByIdIn(ids);
     }
 
+    // Synonym query methods
+    public List<ProteinIdentification> findBySynonymAndProjectAccession(String synonym, String projectAccession) {
+        return solrProteinIdentificationRepository.findBySynonymAndProjectAccession(synonym, projectAccession);
+    }
+
     // find by accession methods
     public List<ProteinIdentification> findByAccession(String accession) {
         return solrProteinIdentificationRepository.findByAccession(accession);
@@ -79,6 +84,11 @@ public class ProteinIdentificationSearchService {
 
     public Page<ProteinIdentification> findByAssayAccession(Collection<String> assayAccessions, Pageable pageable) {
         return solrProteinIdentificationRepository.findByAssayAccessionIn(assayAccessions, pageable);
+    }
+
+    // Submitted accession query methods
+    public List<ProteinIdentification> findBySubmittedAccessionAndAssayAccession(String submittedAccession, String assayAccession){
+        return solrProteinIdentificationRepository.findBySubmittedAccessionAndAssayAccession(submittedAccession, assayAccession);
     }
 
 }
