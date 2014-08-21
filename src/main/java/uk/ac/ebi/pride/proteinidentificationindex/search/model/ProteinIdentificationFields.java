@@ -15,4 +15,7 @@ public class ProteinIdentificationFields {
     public static final String SEQUENCE = "sequence";
     public static final String DESCRIPTION = "description";
     public static final String AMBIGUITY_GROUP = "ambiguity_group";
+    public static final String MODIFICATIONS = "modifications";
+    public static final String MOD_NAMES = "mod_names";
+    public static final String MOD_ACCESSIONS = "mod_accessions";
 }

@@ -2,7 +2,10 @@ package uk.ac.ebi.pride.proteinidentificationindex.search.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.ebi.pride.archive.dataprovider.identification.ModificationProvider;
+import uk.ac.ebi.pride.indexutils.helpers.ModificationHelper;
 import uk.ac.ebi.pride.jmztab.model.MZTabFile;
+import uk.ac.ebi.pride.jmztab.model.Modification;
 import uk.ac.ebi.pride.jmztab.model.Protein;
 import uk.ac.ebi.pride.proteinidentificationindex.search.model.ProteinIdentification;
 import uk.ac.ebi.pride.tools.utils.AccessionResolver;
@@ -34,6 +37,11 @@ public class ProteinIdentificationMzTabBuilder {
                 proteinIdentification.setAmbiguityGroupSubmittedAccessions(new LinkedList<String>());
                 if (mzTabProtein.getAmbiguityMembers()!=null && mzTabProtein.getAmbiguityMembers().size()>0) {
                     proteinIdentification.getAmbiguityGroupSubmittedAccessions().addAll(mzTabProtein.getAmbiguityMembers());
+                }
+                proteinIdentification.setModifications(new LinkedList<ModificationProvider>());
+                if (mzTabProtein.getModifications()!=null && mzTabProtein.getModifications().size()>0) {
+                    for (Modification mod: mzTabProtein.getModifications())
+                    proteinIdentification.addModification(ModificationHelper.convertToModificationProvider(mod));
                 }
                 // try to add a resolved accession to reference the catalog
                 try {
