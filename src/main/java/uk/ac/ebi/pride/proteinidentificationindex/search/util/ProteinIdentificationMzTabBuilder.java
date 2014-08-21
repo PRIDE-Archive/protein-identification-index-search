@@ -31,8 +31,8 @@ public class ProteinIdentificationMzTabBuilder {
                 proteinIdentification.setSubmittedAccession(mzTabProtein.getAccession());
                 proteinIdentification.setAssayAccession(assayAccession);
                 proteinIdentification.setProjectAccession(projectAccession);
+                proteinIdentification.setAmbiguityGroupSubmittedAccessions(new LinkedList<String>());
                 if (mzTabProtein.getAmbiguityMembers()!=null && mzTabProtein.getAmbiguityMembers().size()>0) {
-                    proteinIdentification.setAmbiguityGroupSubmittedAccessions(new LinkedList<String>());
                     proteinIdentification.getAmbiguityGroupSubmittedAccessions().addAll(mzTabProtein.getAmbiguityMembers());
                 }
                 // try to add a resolved accession to reference the catalog
