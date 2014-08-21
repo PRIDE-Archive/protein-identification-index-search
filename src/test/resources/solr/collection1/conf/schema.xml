@@ -107,6 +107,9 @@
         <field name="sequence" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
         <field name="description" type="text_ws" indexed="true" stored="true" required="false" multiValued="true"/>
         <field name="ambiguity_group" type="string" indexed="true" stored="true" required="false" multiValued="true"/>
+        <field name="modifications" type="text_ws" indexed="true" stored="true" required="false" multiValued="true"/>
+        <field name="mod_names" type="string" indexed="true" stored="true" required="false" multiValued="true"/>
+        <field name="mod_accessions" type="string" indexed="true" stored="true" required="false" multiValued="true"/>
 
         <!-- catchall field, containing all other searchable text fields (implemented
              via copyField further on in this schema  -->
