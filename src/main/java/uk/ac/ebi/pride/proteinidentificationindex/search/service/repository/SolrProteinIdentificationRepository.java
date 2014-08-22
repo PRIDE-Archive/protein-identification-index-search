@@ -55,8 +55,8 @@ public interface SolrProteinIdentificationRepository extends SolrCrudRepository<
     Page<ProteinIdentification> findByAssayAccessionIn(Collection<String> assayAccessions, Pageable pageable);
 
     // Submitted accession query methods
-    @Query("submitted_accession:?0 AND assay_accession:?0")
-    List<ProteinIdentification> findBySubmittedAccessionAndAssayAccession(String submitedAccession, String assayAccession);
+    @Query("submitted_accession:?0 AND assay_accession:?1")
+    List<ProteinIdentification> findBySubmittedAccessionAndAssayAccession(String submittedAccession, String assayAccession);
 
 
 }
