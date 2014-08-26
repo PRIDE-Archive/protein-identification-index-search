@@ -35,11 +35,11 @@ public class ProteinIdentificationMzTabBuilder {
                 proteinIdentification.setAssayAccession(assayAccession);
                 proteinIdentification.setProjectAccession(projectAccession);
                 proteinIdentification.setAmbiguityGroupSubmittedAccessions(new LinkedList<String>());
-                if (mzTabProtein.getAmbiguityMembers()!=null && mzTabProtein.getAmbiguityMembers().size()>0) {
+                if (mzTabProtein.getAmbiguityMembers()!=null && mzTabProtein.getAmbiguityMembers().size()>0 && !mzTabProtein.getAmbiguityMembers().get(0).equals("null")) {
                     proteinIdentification.getAmbiguityGroupSubmittedAccessions().addAll(mzTabProtein.getAmbiguityMembers());
                 }
                 proteinIdentification.setModifications(new LinkedList<ModificationProvider>());
-                if (mzTabProtein.getModifications()!=null && mzTabProtein.getModifications().size()>0) {
+                if (mzTabProtein.getModifications()!=null && mzTabProtein.getModifications().size()>0 && !mzTabProtein.getModifications().get(0).equals("null")) {
                     for (Modification mod: mzTabProtein.getModifications())
                     proteinIdentification.addModification(ModificationHelper.convertToModificationProvider(mod));
                 }
