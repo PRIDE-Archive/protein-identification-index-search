@@ -4,10 +4,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import uk.ac.ebi.pride.proteinidentificationindex.search.model.ProteinIdentification;
+import uk.ac.ebi.pride.proteinidentificationindex.search.model.ProteinIdentificationSummary;
 import uk.ac.ebi.pride.proteinidentificationindex.search.service.repository.SolrProteinIdentificationRepository;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Jose A. Dianes
@@ -98,4 +98,29 @@ public class ProteinIdentificationSearchService {
         return solrProteinIdentificationRepository.findBySubmittedAccessionAndAssayAccession(submittedAccession, assayAccession);
     }
 
+    public List<ProteinIdentificationSummary> findSummaryByProjectAccession(String projectAccession) {
+        return solrProteinIdentificationRepository.findSummaryByProjectAccession(projectAccession);
+    }
+
+    public Set<String> getUniqueProteinAccessionsByProjectAccession(String projectAccession) {
+        List<ProteinIdentificationSummary> results = findSummaryByProjectAccession(projectAccession);
+        Set<String> accessions = new HashSet<String>(results.size());
+        for (ProteinIdentificationSummary result : results) {
+            accessions.add(result.getAccession());
+        }
+        return accessions;
+    }
+
+    public List<ProteinIdentificationSummary> findSummaryByAssayAccession(String assayAccession) {
+        return solrProteinIdentificationRepository.findSummaryByAssayAccession(assayAccession);
+    }
+
+    public Set<String> getUniqueProteinAccessionsByAssayAccession(String assayAccession) {
+        List<ProteinIdentificationSummary> results = findSummaryByAssayAccession(assayAccession);
+        Set<String> accessions = new HashSet<String>(results.size());
+        for (ProteinIdentificationSummary result : results) {
+            accessions.add(result.getAccession());
+        }
+        return accessions;
+    }
 }

@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.solr.repository.Query;
 import org.springframework.data.solr.repository.SolrCrudRepository;
 import uk.ac.ebi.pride.proteinidentificationindex.search.model.ProteinIdentification;
+import uk.ac.ebi.pride.proteinidentificationindex.search.model.ProteinIdentificationSummary;
 
 import java.util.Collection;
 import java.util.List;
@@ -61,4 +62,10 @@ public interface SolrProteinIdentificationRepository extends SolrCrudRepository<
     List<ProteinIdentification> findBySubmittedAccessionAndAssayAccession(String submittedAccession, String assayAccession);
 
 
+    // Queries with Projections
+    @Query(value = "project_accession:?0", fields = { "accession" })
+    List<ProteinIdentificationSummary> findSummaryByProjectAccession(String projectAccession);
+
+    @Query(value = "assay_accession:?0", fields = { "accession" })
+    List<ProteinIdentificationSummary> findSummaryByAssayAccession(String assayAccession);
 }
