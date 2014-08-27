@@ -53,6 +53,7 @@
         <archive.repo.version>0.1.17-SNAPSHOT</archive.repo.version>
         <archive.data.provider.api.version>2.0.5-SNAPSHOT</archive.data.provider.api.version>
         <jmztab.version>3.0.0</jmztab.version>
+        <spring.data.rest.core.version>2.1.2.RELEASE</spring.data.rest.core.version>
     </properties>
 
     <build>
@@ -215,6 +216,13 @@
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-solr</artifactId>
+        </dependency>
+
+        <!-- spring-data-rest (@Projection annotation) -->
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-rest-core</artifactId>
+            <version>${spring.data.rest.core.version}</version>
         </dependency>
 
         <!--SolrJ-->
