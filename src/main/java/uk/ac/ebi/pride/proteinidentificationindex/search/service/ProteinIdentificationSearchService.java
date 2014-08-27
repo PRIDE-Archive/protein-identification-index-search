@@ -16,6 +16,7 @@ import java.util.List;
  *          NOTE: protein accessions can contain chars that produce problems in solr queries ([,],:). They are replaced by _ when
  *          using the repository methods
  */
+@SuppressWarnings("unused")
 @Service
 public class ProteinIdentificationSearchService {
 
@@ -56,6 +57,9 @@ public class ProteinIdentificationSearchService {
     public List<ProteinIdentification> findByProjectAccession(String projectAccession) {
         return solrProteinIdentificationRepository.findByProjectAccession(projectAccession);
     }
+    public Long countByProjectAccession(String projectAccession) {
+        return solrProteinIdentificationRepository.countByProjectAccession(projectAccession);
+    }
 
     public List<ProteinIdentification> findByProjectAccession(Collection<String> projectAccessions) {
         return solrProteinIdentificationRepository.findByProjectAccessionIn(projectAccessions);
@@ -72,6 +76,9 @@ public class ProteinIdentificationSearchService {
     // Assay accession query methods
     public List<ProteinIdentification> findByAssayAccession(String assayAccession) {
         return solrProteinIdentificationRepository.findByAssayAccession(assayAccession);
+    }
+    public Long countByAssayAccession(String assayAccession) {
+        return solrProteinIdentificationRepository.countByAssayAccession(assayAccession);
     }
 
     public List<ProteinIdentification> findByAssayAccession(Collection<String> assayAccessions) {

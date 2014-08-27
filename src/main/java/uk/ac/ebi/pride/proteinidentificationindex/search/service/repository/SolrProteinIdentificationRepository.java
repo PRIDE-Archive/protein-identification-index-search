@@ -37,6 +37,7 @@ public interface SolrProteinIdentificationRepository extends SolrCrudRepository<
     // Project accession query methods
     @Query("project_accession:?0")
     List<ProteinIdentification> findByProjectAccession(String projectAccession);
+    Long countByProjectAccession(String projectAccession);
     @Query("project_accession:(?0)")
     List<ProteinIdentification> findByProjectAccessionIn(Collection<String> projectAccessions);
     @Query("project_accession:?0")
@@ -47,6 +48,7 @@ public interface SolrProteinIdentificationRepository extends SolrCrudRepository<
     // Assay accession query methods
     @Query("assay_accession:?0")
     List<ProteinIdentification> findByAssayAccession(String assayAccession);
+    Long countByAssayAccession(String assayAccession);
     @Query("assay_accession:(?0)")
     List<ProteinIdentification> findByAssayAccessionIn(Collection<String> assayAccessions);
     @Query("assay_accession:?0")
