@@ -1,10 +1,15 @@
 package uk.ac.ebi.pride.proteinidentificationindex.search.service;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.solr.core.query.result.FacetFieldEntry;
+import org.springframework.data.solr.core.query.result.FacetPage;
 import org.springframework.data.solr.core.query.result.HighlightPage;
 import org.springframework.stereotype.Service;
+import uk.ac.ebi.pride.indexutils.results.PageWrapper;
 import uk.ac.ebi.pride.proteinidentificationindex.search.model.ProteinIdentification;
+import uk.ac.ebi.pride.proteinidentificationindex.search.model.ProteinIdentificationFields;
 import uk.ac.ebi.pride.proteinidentificationindex.search.model.ProteinIdentificationSummary;
 import uk.ac.ebi.pride.proteinidentificationindex.search.service.repository.SolrProteinIdentificationRepository;
 
@@ -94,33 +99,119 @@ public class ProteinIdentificationSearchService {
         return solrProteinIdentificationRepository.findByAssayAccessionIn(assayAccessions, pageable);
     }
 
-//    /**
-//     * Return protein identifications filtered (or not) by modifications names with the highlights for modification names
-//     *
-//     * @param assayAccession mandatory
-//     * @param term optional
-//     * @param modNameFilters optional
-//     * @param pageable requested page
-//     * @return A page with the protein identifications and the highlights snippets
-//     */
-//    public HighlightPage<ProteinIdentification> findByAssayAccessionHighlightsOnModificationNames(
-//            String assayAccession, String term, List<String> modNameFilters, Pageable pageable) {
-//
-//        HighlightPage<ProteinIdentification> proteinIdentifications;
-//
-//        if ((term == null || term.isEmpty()) && (modNameFilters == null || modNameFilters.isEmpty())) {
-//            proteinIdentifications = solrProteinIdentificationRepository.findByAssayAccessionHighlights(assayAccession, pageable);
-//        } else if ((term != null && !term.isEmpty()) && (modNameFilters == null || modNameFilters.isEmpty())) {
-//            proteinIdentifications = solrProteinIdentificationRepository.findByAssayAccessionHighlights(assayAccession, term, pageable);
-//        } else if ((term == null || term.isEmpty()) && (modNameFilters != null && !modNameFilters.isEmpty())) {
-//            proteinIdentifications = solrProteinIdentificationRepository.findByAssayAccessionHighlightsAndFilterModNames(assayAccession, modNameFilters, pageable);
-//        } else {
-//            proteinIdentifications = solrProteinIdentificationRepository.findByAssayAccessionHighlightsAndFilterModNames(assayAccession, term, modNameFilters, pageable);
-//        }
-//
-//        return proteinIdentifications;
-//    }
+    /**
+     * Count the facets per modification name
+     * @param assayAccession mandatory
+     * @param term optional
+     * @param modNameFilters optional
+     * @return a map with the mod_names and the number of hits per mod_synonym
+     */
+    public Map<String, Long> findByAssayAccessionFacetOnModificationNames(String assayAccession, String term, List<String> modNameFilters) {
 
+        Map<String, Long> modificationsCount = new TreeMap<String, Long>();
+        FacetPage<ProteinIdentification> proteinIdentifications;
+
+        if ((term == null || term.isEmpty()) && (modNameFilters == null || modNameFilters.isEmpty())) {
+            proteinIdentifications = solrProteinIdentificationRepository.findByAssayAccessionFacetModNames(assayAccession, new PageRequest(0, 1));
+        } else if ((term != null && !term.isEmpty()) && (modNameFilters == null || modNameFilters.isEmpty())) {
+            proteinIdentifications = solrProteinIdentificationRepository.findByAssayAccessionFacetModNames(assayAccession, term, new PageRequest(0, 1));
+        } else if ((term == null || term.isEmpty()) && (modNameFilters != null && !modNameFilters.isEmpty())) {
+            proteinIdentifications = solrProteinIdentificationRepository.findByAssayAccessionFacetModNamesAndFilterModNames(assayAccession, modNameFilters, new PageRequest(0, 1));
+        } else {
+            proteinIdentifications = solrProteinIdentificationRepository.findByAssayAccessionFacetModNamesAndFilterModNames(assayAccession, term, modNameFilters, new PageRequest(0, 1));
+        }
+
+        if (proteinIdentifications != null) {
+            for (FacetFieldEntry facetFieldEntry : proteinIdentifications.getFacetResultPage(ProteinIdentificationFields.MOD_NAMES)) {
+                modificationsCount.put(facetFieldEntry.getValue(), facetFieldEntry.getValueCount());
+            }
+        }
+        return modificationsCount;
+    }
+
+    /**
+     * Count the facets per modification name
+     * @param projectAccession mandatory
+     * @param term optional
+     * @param modNameFilters optional
+     * @return a map with the mod_names and the number of hits per mod_synonym
+     */
+    public Map<String, Long> findByProjectAccessionFacetOnModificationNames(String projectAccession, String term, List<String> modNameFilters) {
+
+        Map<String, Long> modificationsCount = new TreeMap<String, Long>();
+        FacetPage<ProteinIdentification> proteinIdentifications;
+
+        if ((term == null || term.isEmpty()) && (modNameFilters == null || modNameFilters.isEmpty())) {
+            proteinIdentifications = solrProteinIdentificationRepository.findByProjectAccessionFacetModNames(projectAccession, new PageRequest(0, 1));
+        } else if ((term != null && !term.isEmpty()) && (modNameFilters == null || modNameFilters.isEmpty())) {
+            proteinIdentifications = solrProteinIdentificationRepository.findByProjectAccessionFacetModNames(projectAccession, term, new PageRequest(0, 1));
+        } else if ((term == null || term.isEmpty()) && (modNameFilters != null && !modNameFilters.isEmpty())) {
+            proteinIdentifications = solrProteinIdentificationRepository.findByProjectAccessionFacetModNamesAndFilterModNames(projectAccession, modNameFilters, new PageRequest(0, 1));
+        } else {
+            proteinIdentifications = solrProteinIdentificationRepository.findByProjectAccessionFacetModNamesAndFilterModNames(projectAccession, term, modNameFilters, new PageRequest(0, 1));
+        }
+
+        if (proteinIdentifications != null) {
+            for (FacetFieldEntry facetFieldEntry : proteinIdentifications.getFacetResultPage(ProteinIdentificationFields.MOD_NAMES)) {
+                modificationsCount.put(facetFieldEntry.getValue(), facetFieldEntry.getValueCount());
+            }
+        }
+        return modificationsCount;
+    }
+
+    /**
+     * Return protein identifications filtered (or not) by modifications names with the highlights for modification names
+     *
+     * @param assayAccession mandatory
+     * @param term optional
+     * @param modNameFilters optional
+     * @param pageable requested page
+     * @return A page with the protein identifications and the highlights snippets
+     */
+    public PageWrapper<ProteinIdentification> findByAssayAccessionHighlightsOnModificationNames(
+            String assayAccession, String term, List<String> modNameFilters, Pageable pageable) {
+
+        PageWrapper<ProteinIdentification> proteinIdentifications;
+
+        if ((term == null || term.isEmpty()) && (modNameFilters == null || modNameFilters.isEmpty())) {
+            proteinIdentifications = new PageWrapper<ProteinIdentification>(solrProteinIdentificationRepository.findByAssayAccession(assayAccession, pageable));
+        } else if ((term != null && !term.isEmpty()) && (modNameFilters == null || modNameFilters.isEmpty())) {
+            proteinIdentifications = new PageWrapper<ProteinIdentification>(solrProteinIdentificationRepository.findByAssayAccessionHighlights(assayAccession, term, pageable));
+        } else if ((term == null || term.isEmpty()) && (modNameFilters != null && !modNameFilters.isEmpty())) {
+            proteinIdentifications = new PageWrapper<ProteinIdentification>(solrProteinIdentificationRepository.findByAssayAccessionAndFilterModNames(assayAccession, modNameFilters, pageable));
+        } else {
+            proteinIdentifications = new PageWrapper<ProteinIdentification>(solrProteinIdentificationRepository.findByAssayAccessionHighlightsAndFilterModNames(assayAccession, term, modNameFilters, pageable));
+        }
+
+        return proteinIdentifications;
+    }
+
+    /**
+     * Return protein identifications filtered (or not) by modifications names with the highlights for modification names
+     *
+     * @param projectAccession mandatory
+     * @param term optional
+     * @param modNameFilters optional
+     * @param pageable requested page
+     * @return A page with the protein identifications and the highlights snippets
+     */
+    public PageWrapper<ProteinIdentification> findByProjectAccessionHighlightsOnModificationNames(
+            String projectAccession, String term, List<String> modNameFilters, Pageable pageable) {
+
+        PageWrapper<ProteinIdentification> proteinIdentifications;
+
+        if ((term == null || term.isEmpty()) && (modNameFilters == null || modNameFilters.isEmpty())) {
+            proteinIdentifications = new PageWrapper<ProteinIdentification>(solrProteinIdentificationRepository.findByProjectAccession(projectAccession, pageable));
+        } else if ((term != null && !term.isEmpty()) && (modNameFilters == null || modNameFilters.isEmpty())) {
+            proteinIdentifications = new PageWrapper<ProteinIdentification>(solrProteinIdentificationRepository.findByProjectAccessionHighlights(projectAccession, term, pageable));
+        } else if ((term == null || term.isEmpty()) && (modNameFilters != null && !modNameFilters.isEmpty())) {
+            proteinIdentifications = new PageWrapper<ProteinIdentification>(solrProteinIdentificationRepository.findByProjectAccessionAndFilterModNames(projectAccession, modNameFilters, pageable));
+        } else {
+            proteinIdentifications = new PageWrapper<ProteinIdentification>(solrProteinIdentificationRepository.findByProjectAccessionHighlightsAndFilterModNames(projectAccession, term, modNameFilters, pageable));
+        }
+
+        return proteinIdentifications;
+    }
 
     // Submitted accession query methods
     public List<ProteinIdentification> findBySubmittedAccessionAndAssayAccession(String submittedAccession, String assayAccession){

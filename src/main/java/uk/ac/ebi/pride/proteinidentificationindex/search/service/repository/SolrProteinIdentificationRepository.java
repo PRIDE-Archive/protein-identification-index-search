@@ -66,16 +66,20 @@ public interface SolrProteinIdentificationRepository extends SolrCrudRepository<
     HighlightPage<ProteinIdentification> findByProjectAccessionHighlightsAndFilterModNames(String projectAccessions, String term, List<String> modNameFilters, Pageable pageable);
 
     @Facet(fields = {"mod_names"}, limit = 100)
+    @Query(value = "project_accession:?0")
+    FacetPage<ProteinIdentification> findByProjectAccessionFacetModNames(String projectAccessions, Pageable pageable);
+
+    @Facet(fields = {"mod_names"}, limit = 100)
     @Query(value = "project_accession:?0 AND (protein_sequence:?1 OR submitted_accession:?1 OR accession:?1 OR ambiguity_group:?1)")
-    FacetPage<ProteinIdentification> findByProjectAccessionFacet(String projectAccessions, String term, Pageable pageable);
+    FacetPage<ProteinIdentification> findByProjectAccessionFacetModNames(String projectAccessions, String term, Pageable pageable);
 
     @Facet(fields = {"mod_names"}, limit = 100)
     @Query(value = "project_accession:?0", filters = "mod_names:(?1)", defaultOperator = AND)
-    FacetPage<ProteinIdentification> findByProjectAccessionFacetAndFilterModNames(String projectAccessions, List<String> modNameFilters, Pageable pageable);
+    FacetPage<ProteinIdentification> findByProjectAccessionFacetModNamesAndFilterModNames(String projectAccessions, List<String> modNameFilters, Pageable pageable);
 
     @Facet(fields = {"mod_names"}, limit = 100)
     @Query(value = "project_accession:?0 AND (protein_sequence:?1 OR submitted_accession:?1 OR accession:?1 OR ambiguity_group:?1)", filters = "mod_names:(?2)", defaultOperator = AND)
-    FacetPage<ProteinIdentification> findByProjectAccessionFacetAndFilterModNames(String projectAccessions, String term, List<String> modNameFilters, Pageable pageable);
+    FacetPage<ProteinIdentification> findByProjectAccessionFacetModNamesAndFilterModNames(String projectAccessions, String term, List<String> modNameFilters, Pageable pageable);
 
 
     // Assay accession query methods
@@ -102,15 +106,19 @@ public interface SolrProteinIdentificationRepository extends SolrCrudRepository<
 
     @Facet(fields = {"mod_names"}, limit = 100)
     @Query(value = "assay_accession:?0 AND (protein_sequence:?1 OR submitted_accession:?1 OR accession:?1 OR ambiguity_group:?1)")
-    FacetPage<ProteinIdentification> findByAssayAccessionFacet(String assayAccession, String term, Pageable pageable);
+    FacetPage<ProteinIdentification> findByAssayAccessionFacetModNames(String assayAccession, String term, Pageable pageable);
+
+    @Facet(fields = {"mod_names"}, limit = 100)
+    @Query(value = "assay_accession:?0")
+    FacetPage<ProteinIdentification> findByAssayAccessionFacetModNames(String assayAccession, Pageable pageable);
 
     @Facet(fields = {"mod_names"}, limit = 100)
     @Query(value = "assay_accession:?0", filters = "mod_names:(?1)", defaultOperator = AND)
-    FacetPage<ProteinIdentification> findByAssayAccessionFacetAndFilterModNames(String assayAccession, List<String> modNameFilters, Pageable pageable);
+    FacetPage<ProteinIdentification> findByAssayAccessionFacetModNamesAndFilterModNames(String assayAccession, List<String> modNameFilters, Pageable pageable);
 
     @Facet(fields = {"mod_names"}, limit = 100)
     @Query(value = "assay_accession:?0 AND (protein_sequence:?1 OR submitted_accession:?1 OR accession:?1 OR ambiguity_group:?1)", filters = "mod_names:(?2)", defaultOperator = AND)
-    FacetPage<ProteinIdentification> findByAssayAccessionFacetAndFilterModNames(String assayAccession, String term, List<String> modNameFilters, Pageable pageable);
+    FacetPage<ProteinIdentification> findByAssayAccessionFacetModNamesAndFilterModNames(String assayAccession, String term, List<String> modNameFilters, Pageable pageable);
 
 
     // Submitted accession query methods
