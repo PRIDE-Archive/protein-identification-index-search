@@ -2,6 +2,7 @@ package uk.ac.ebi.pride.proteinidentificationindex.search.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.solr.core.query.result.HighlightPage;
 import org.springframework.stereotype.Service;
 import uk.ac.ebi.pride.proteinidentificationindex.search.model.ProteinIdentification;
 import uk.ac.ebi.pride.proteinidentificationindex.search.model.ProteinIdentificationSummary;
@@ -92,6 +93,34 @@ public class ProteinIdentificationSearchService {
     public Page<ProteinIdentification> findByAssayAccession(Collection<String> assayAccessions, Pageable pageable) {
         return solrProteinIdentificationRepository.findByAssayAccessionIn(assayAccessions, pageable);
     }
+
+//    /**
+//     * Return protein identifications filtered (or not) by modifications names with the highlights for modification names
+//     *
+//     * @param assayAccession mandatory
+//     * @param term optional
+//     * @param modNameFilters optional
+//     * @param pageable requested page
+//     * @return A page with the protein identifications and the highlights snippets
+//     */
+//    public HighlightPage<ProteinIdentification> findByAssayAccessionHighlightsOnModificationNames(
+//            String assayAccession, String term, List<String> modNameFilters, Pageable pageable) {
+//
+//        HighlightPage<ProteinIdentification> proteinIdentifications;
+//
+//        if ((term == null || term.isEmpty()) && (modNameFilters == null || modNameFilters.isEmpty())) {
+//            proteinIdentifications = solrProteinIdentificationRepository.findByAssayAccessionHighlights(assayAccession, pageable);
+//        } else if ((term != null && !term.isEmpty()) && (modNameFilters == null || modNameFilters.isEmpty())) {
+//            proteinIdentifications = solrProteinIdentificationRepository.findByAssayAccessionHighlights(assayAccession, term, pageable);
+//        } else if ((term == null || term.isEmpty()) && (modNameFilters != null && !modNameFilters.isEmpty())) {
+//            proteinIdentifications = solrProteinIdentificationRepository.findByAssayAccessionHighlightsAndFilterModNames(assayAccession, modNameFilters, pageable);
+//        } else {
+//            proteinIdentifications = solrProteinIdentificationRepository.findByAssayAccessionHighlightsAndFilterModNames(assayAccession, term, modNameFilters, pageable);
+//        }
+//
+//        return proteinIdentifications;
+//    }
+
 
     // Submitted accession query methods
     public List<ProteinIdentification> findBySubmittedAccessionAndAssayAccession(String submittedAccession, String assayAccession){
