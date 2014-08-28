@@ -2,6 +2,10 @@ package uk.ac.ebi.pride.proteinidentificationindex.search.service.repository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.solr.core.query.result.FacetPage;
+import org.springframework.data.solr.core.query.result.HighlightPage;
+import org.springframework.data.solr.repository.Facet;
+import org.springframework.data.solr.repository.Highlight;
 import org.springframework.data.solr.repository.Query;
 import org.springframework.data.solr.repository.SolrCrudRepository;
 import uk.ac.ebi.pride.proteinidentificationindex.search.model.ProteinIdentification;
@@ -9,6 +13,8 @@ import uk.ac.ebi.pride.proteinidentificationindex.search.model.ProteinIdentifica
 
 import java.util.Collection;
 import java.util.List;
+
+import static org.springframework.data.solr.core.query.Query.Operator.*;
 
 /**
  * @author Jose A. Dianes
@@ -18,6 +24,8 @@ import java.util.List;
  */
 public interface SolrProteinIdentificationRepository extends SolrCrudRepository<ProteinIdentification, String> {
 
+    public static final String HIGHLIGHT_PRE_FRAGMENT = "<span class='search-hit'>";
+    public static final String HIGHLIGHT_POST_FRAGMENT = "</span>";
 
     // Id query methods
     @Query("id:?0")
@@ -36,9 +44,9 @@ public interface SolrProteinIdentificationRepository extends SolrCrudRepository<
     List<ProteinIdentification> findBySynonymAndProjectAccession(String synonym, String projectAccession);
 
     // Project accession query methods
+    Long countByProjectAccession(String projectAccession);
     @Query("project_accession:?0")
     List<ProteinIdentification> findByProjectAccession(String projectAccession);
-    Long countByProjectAccession(String projectAccession);
     @Query("project_accession:(?0)")
     List<ProteinIdentification> findByProjectAccessionIn(Collection<String> projectAccessions);
     @Query("project_accession:?0")
@@ -46,10 +54,34 @@ public interface SolrProteinIdentificationRepository extends SolrCrudRepository<
     @Query("project_accession:(?0)")
     Page<ProteinIdentification> findByProjectAccessionIn(Collection<String> projectAccessions, Pageable pageable);
 
+    @Query(value = "project_accession:?0", filters = "mod_names:(?1)", defaultOperator = AND)
+    Page<ProteinIdentification> findByProjectAccessionAndFilterModNames(String projectAccessions, List<String> modNameFilters, Pageable pageable);
+
+    @Highlight(prefix = HIGHLIGHT_PRE_FRAGMENT, postfix = HIGHLIGHT_POST_FRAGMENT, fields = {"protein_sequence, submitted_accession, accession, ambiguity_group"})
+    @Query(value = "project_accession:?0 AND (protein_sequence:?1 OR submitted_accession:?1 OR accession:?1 OR ambiguity_group:?1)")
+    HighlightPage<ProteinIdentification> findByProjectAccessionHighlights(String projectAccessions, String term, Pageable pageable);
+
+    @Highlight(prefix = HIGHLIGHT_PRE_FRAGMENT, postfix = HIGHLIGHT_POST_FRAGMENT, fields = {"protein_sequence, submitted_accession, accession, ambiguity_group"})
+    @Query(value = "project_accession:?0 AND (protein_sequence:?1 OR submitted_accession:?1 OR accession:?1 OR ambiguity_group:?1)", filters = "mod_names:(?2)", defaultOperator = AND)
+    HighlightPage<ProteinIdentification> findByProjectAccessionHighlightsAndFilterModNames(String projectAccessions, String term, List<String> modNameFilters, Pageable pageable);
+
+    @Facet(fields = {"mod_names"}, limit = 100)
+    @Query(value = "project_accession:?0 AND (protein_sequence:?1 OR submitted_accession:?1 OR accession:?1 OR ambiguity_group:?1)")
+    FacetPage<ProteinIdentification> findByProjectAccessionFacet(String projectAccessions, String term, Pageable pageable);
+
+    @Facet(fields = {"mod_names"}, limit = 100)
+    @Query(value = "project_accession:?0", filters = "mod_names:(?1)", defaultOperator = AND)
+    FacetPage<ProteinIdentification> findByProjectAccessionFacetAndFilterModNames(String projectAccessions, List<String> modNameFilters, Pageable pageable);
+
+    @Facet(fields = {"mod_names"}, limit = 100)
+    @Query(value = "project_accession:?0 AND (protein_sequence:?1 OR submitted_accession:?1 OR accession:?1 OR ambiguity_group:?1)", filters = "mod_names:(?2)", defaultOperator = AND)
+    FacetPage<ProteinIdentification> findByProjectAccessionFacetAndFilterModNames(String projectAccessions, String term, List<String> modNameFilters, Pageable pageable);
+
+
     // Assay accession query methods
+    Long countByAssayAccession(String assayAccession);
     @Query("assay_accession:?0")
     List<ProteinIdentification> findByAssayAccession(String assayAccession);
-    Long countByAssayAccession(String assayAccession);
     @Query("assay_accession:(?0)")
     List<ProteinIdentification> findByAssayAccessionIn(Collection<String> assayAccessions);
     @Query("assay_accession:?0")
@@ -57,10 +89,33 @@ public interface SolrProteinIdentificationRepository extends SolrCrudRepository<
     @Query("assay_accession:(?0)")
     Page<ProteinIdentification> findByAssayAccessionIn(Collection<String> assayAccessions, Pageable pageable);
 
-    // Submitted accession query methods
-    @Query("submitted_accession:?0 AND assay_accession:?1")
-    List<ProteinIdentification> findBySubmittedAccessionAndAssayAccession(String submittedAccession, String assayAccession);
+    @Query(value = "assay_accession:?0", filters = "mod_names:(?1)", defaultOperator = AND)
+    Page<ProteinIdentification> findByAssayAccessionAndFilterModNames(String assayAccession, List<String> modNameFilters, Pageable pageable);
 
+    @Highlight(prefix = HIGHLIGHT_PRE_FRAGMENT, postfix = HIGHLIGHT_POST_FRAGMENT, fields = {"protein_sequence, submitted_accession, accession, ambiguity_group"})
+    @Query(value = "assay_accession:?0 AND (protein_sequence:?1 OR submitted_accession:?1 OR accession:?1 OR ambiguity_group:?1)")
+    HighlightPage<ProteinIdentification> findByAssayAccessionHighlights(String assayAccession, String term, Pageable pageable);
+
+    @Highlight(prefix = HIGHLIGHT_PRE_FRAGMENT, postfix = HIGHLIGHT_POST_FRAGMENT, fields = {"protein_sequence, submitted_accession, accession, ambiguity_group"})
+    @Query(value = "assay_accession:?0 AND (protein_sequence:?1 OR submitted_accession:?1 OR accession:?1 OR ambiguity_group:?1)", filters = "mod_names:(?2)", defaultOperator = AND)
+    HighlightPage<ProteinIdentification> findByAssayAccessionHighlightsAndFilterModNames(String assayAccession, String term, List<String> modNameFilters, Pageable pageable);
+
+    @Facet(fields = {"mod_names"}, limit = 100)
+    @Query(value = "assay_accession:?0 AND (protein_sequence:?1 OR submitted_accession:?1 OR accession:?1 OR ambiguity_group:?1)")
+    FacetPage<ProteinIdentification> findByAssayAccessionFacet(String assayAccession, String term, Pageable pageable);
+
+    @Facet(fields = {"mod_names"}, limit = 100)
+    @Query(value = "assay_accession:?0", filters = "mod_names:(?1)", defaultOperator = AND)
+    FacetPage<ProteinIdentification> findByAssayAccessionFacetAndFilterModNames(String assayAccession, List<String> modNameFilters, Pageable pageable);
+
+    @Facet(fields = {"mod_names"}, limit = 100)
+    @Query(value = "assay_accession:?0 AND (protein_sequence:?1 OR submitted_accession:?1 OR accession:?1 OR ambiguity_group:?1)", filters = "mod_names:(?2)", defaultOperator = AND)
+    FacetPage<ProteinIdentification> findByAssayAccessionFacetAndFilterModNames(String assayAccession, String term, List<String> modNameFilters, Pageable pageable);
+
+
+    // Submitted accession query methods
+    @Query("submitted_accession:?0 AND assay_accession:?0")
+    List<ProteinIdentification> findBySubmittedAccessionAndAssayAccession(String submitedAccession, String assayAccession);
 
     // Queries with Projections
     @Query(value = "project_accession:?0", fields = { "accession" })
@@ -68,4 +123,5 @@ public interface SolrProteinIdentificationRepository extends SolrCrudRepository<
 
     @Query(value = "assay_accession:?0", fields = { "accession" })
     List<ProteinIdentificationSummary> findSummaryByAssayAccession(String assayAccession);
+
 }
