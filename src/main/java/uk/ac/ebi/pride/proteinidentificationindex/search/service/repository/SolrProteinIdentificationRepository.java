@@ -122,7 +122,7 @@ public interface SolrProteinIdentificationRepository extends SolrCrudRepository<
 
 
     // Submitted accession query methods
-    @Query("submitted_accession:?0 AND assay_accession:?0")
+    @Query("submitted_accession:?0 AND assay_accession:?1")
     List<ProteinIdentification> findBySubmittedAccessionAndAssayAccession(String submittedAccession, String assayAccession);
 
     // Queries with Projections
