@@ -52,7 +52,7 @@
         <protein.index.search.version>0.2.0-SNAPSHOT</protein.index.search.version>
         <archive.repo.version>0.1.17-SNAPSHOT</archive.repo.version>
         <archive.data.provider.api.version>2.0.5-SNAPSHOT</archive.data.provider.api.version>
-        <jmztab.version>3.0.0</jmztab.version>
+        <jmztab.version>3.0.1-SNAPSHOT</jmztab.version>
         <spring.data.rest.core.version>2.1.2.RELEASE</spring.data.rest.core.version>
     </properties>
 
@@ -294,26 +294,8 @@
             <artifactId>jmztab-modular-model</artifactId>
             <!-- based on mzTab specification version 1.0 RC5-->
             <version>${jmztab.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>log4j</groupId>
-                    <artifactId>log4j</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
-        <dependency>
-            <groupId>uk.ac.ebi.pride</groupId>
-            <artifactId>jmztab-modular-util</artifactId>
-            <!-- based on mzTab specification version 1.0 RC5-->
-            <version>${jmztab.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>log4j</groupId>
-                    <artifactId>log4j</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
 
         <dependency>
             <groupId>com.oracle</groupId>
@@ -336,13 +318,6 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-        </dependency>
-
-        <!--modifications-->
-        <dependency>
-            <groupId>uk.ac.ebi.pride</groupId>
-            <artifactId>index-utils</artifactId>
-            <version>0.1.0-SNAPSHOT</version>
         </dependency>
 
     </dependencies>
