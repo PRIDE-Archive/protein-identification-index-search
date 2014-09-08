@@ -5,7 +5,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.solr.core.query.result.FacetFieldEntry;
 import org.springframework.data.solr.core.query.result.FacetPage;
-import org.springframework.data.solr.core.query.result.HighlightPage;
 import org.springframework.stereotype.Service;
 import uk.ac.ebi.pride.indexutils.results.PageWrapper;
 import uk.ac.ebi.pride.proteinidentificationindex.search.model.ProteinIdentification;
@@ -45,9 +44,9 @@ public class ProteinIdentificationSearchService {
         return solrProteinIdentificationRepository.findByIdIn(ids);
     }
 
-    // Synonym query methods
-    public List<ProteinIdentification> findBySynonymAndProjectAccession(String synonym, String projectAccession) {
-        return solrProteinIdentificationRepository.findBySynonymAndProjectAccession(synonym, projectAccession);
+    // Mapping query methods
+    public List<ProteinIdentification> findByProjectAccessionAndAnyMapping(String accession, String projectAccession) {
+        return solrProteinIdentificationRepository.findByProjectAccessionAndAnyMapping(projectAccession, accession, accession);
     }
 
     // find by accession methods
@@ -114,11 +113,11 @@ public class ProteinIdentificationSearchService {
         if ((term == null || term.isEmpty()) && (modNameFilters == null || modNameFilters.isEmpty())) {
             proteinIdentifications = solrProteinIdentificationRepository.findByAssayAccessionFacetModNames(assayAccession, new PageRequest(0, 1));
         } else if ((term != null && !term.isEmpty()) && (modNameFilters == null || modNameFilters.isEmpty())) {
-            proteinIdentifications = solrProteinIdentificationRepository.findByAssayAccessionFacetModNames(assayAccession, term, new PageRequest(0, 1));
+            proteinIdentifications = solrProteinIdentificationRepository.findByAssayAccessionFacetModNames(assayAccession, term, term, new PageRequest(0, 1));
         } else if ((term == null || term.isEmpty()) && (modNameFilters != null && !modNameFilters.isEmpty())) {
             proteinIdentifications = solrProteinIdentificationRepository.findByAssayAccessionFacetModNamesAndFilterModNames(assayAccession, modNameFilters, new PageRequest(0, 1));
         } else {
-            proteinIdentifications = solrProteinIdentificationRepository.findByAssayAccessionFacetModNamesAndFilterModNames(assayAccession, term, modNameFilters, new PageRequest(0, 1));
+            proteinIdentifications = solrProteinIdentificationRepository.findByAssayAccessionFacetModNamesAndFilterModNames(assayAccession, term, term, modNameFilters, new PageRequest(0, 1));
         }
 
         if (proteinIdentifications != null) {
@@ -144,11 +143,11 @@ public class ProteinIdentificationSearchService {
         if ((term == null || term.isEmpty()) && (modNameFilters == null || modNameFilters.isEmpty())) {
             proteinIdentifications = solrProteinIdentificationRepository.findByProjectAccessionFacetModNames(projectAccession, new PageRequest(0, 1));
         } else if ((term != null && !term.isEmpty()) && (modNameFilters == null || modNameFilters.isEmpty())) {
-            proteinIdentifications = solrProteinIdentificationRepository.findByProjectAccessionFacetModNames(projectAccession, term, new PageRequest(0, 1));
+            proteinIdentifications = solrProteinIdentificationRepository.findByProjectAccessionFacetModNames(projectAccession, term, term, new PageRequest(0, 1));
         } else if ((term == null || term.isEmpty()) && (modNameFilters != null && !modNameFilters.isEmpty())) {
             proteinIdentifications = solrProteinIdentificationRepository.findByProjectAccessionFacetModNamesAndFilterModNames(projectAccession, modNameFilters, new PageRequest(0, 1));
         } else {
-            proteinIdentifications = solrProteinIdentificationRepository.findByProjectAccessionFacetModNamesAndFilterModNames(projectAccession, term, modNameFilters, new PageRequest(0, 1));
+            proteinIdentifications = solrProteinIdentificationRepository.findByProjectAccessionFacetModNamesAndFilterModNames(projectAccession, term, term, modNameFilters, new PageRequest(0, 1));
         }
 
         if (proteinIdentifications != null) {
@@ -176,11 +175,11 @@ public class ProteinIdentificationSearchService {
         if ((term == null || term.isEmpty()) && (modNameFilters == null || modNameFilters.isEmpty())) {
             proteinIdentifications = new PageWrapper<ProteinIdentification>(solrProteinIdentificationRepository.findByAssayAccession(assayAccession, pageable));
         } else if ((term != null && !term.isEmpty()) && (modNameFilters == null || modNameFilters.isEmpty())) {
-            proteinIdentifications = new PageWrapper<ProteinIdentification>(solrProteinIdentificationRepository.findByAssayAccessionHighlights(assayAccession, term, pageable));
+            proteinIdentifications = new PageWrapper<ProteinIdentification>(solrProteinIdentificationRepository.findByAssayAccessionHighlights(assayAccession, term, term, pageable));
         } else if ((term == null || term.isEmpty()) && (modNameFilters != null && !modNameFilters.isEmpty())) {
             proteinIdentifications = new PageWrapper<ProteinIdentification>(solrProteinIdentificationRepository.findByAssayAccessionAndFilterModNames(assayAccession, modNameFilters, pageable));
         } else {
-            proteinIdentifications = new PageWrapper<ProteinIdentification>(solrProteinIdentificationRepository.findByAssayAccessionHighlightsAndFilterModNames(assayAccession, term, modNameFilters, pageable));
+            proteinIdentifications = new PageWrapper<ProteinIdentification>(solrProteinIdentificationRepository.findByAssayAccessionHighlightsAndFilterModNames(assayAccession, term, term, modNameFilters, pageable));
         }
 
         return proteinIdentifications;
@@ -203,11 +202,11 @@ public class ProteinIdentificationSearchService {
         if ((term == null || term.isEmpty()) && (modNameFilters == null || modNameFilters.isEmpty())) {
             proteinIdentifications = new PageWrapper<ProteinIdentification>(solrProteinIdentificationRepository.findByProjectAccession(projectAccession, pageable));
         } else if ((term != null && !term.isEmpty()) && (modNameFilters == null || modNameFilters.isEmpty())) {
-            proteinIdentifications = new PageWrapper<ProteinIdentification>(solrProteinIdentificationRepository.findByProjectAccessionHighlights(projectAccession, term, pageable));
+            proteinIdentifications = new PageWrapper<ProteinIdentification>(solrProteinIdentificationRepository.findByProjectAccessionHighlights(projectAccession, term, term, pageable));
         } else if ((term == null || term.isEmpty()) && (modNameFilters != null && !modNameFilters.isEmpty())) {
             proteinIdentifications = new PageWrapper<ProteinIdentification>(solrProteinIdentificationRepository.findByProjectAccessionAndFilterModNames(projectAccession, modNameFilters, pageable));
         } else {
-            proteinIdentifications = new PageWrapper<ProteinIdentification>(solrProteinIdentificationRepository.findByProjectAccessionHighlightsAndFilterModNames(projectAccession, term, modNameFilters, pageable));
+            proteinIdentifications = new PageWrapper<ProteinIdentification>(solrProteinIdentificationRepository.findByProjectAccessionHighlightsAndFilterModNames(projectAccession, term, term, modNameFilters, pageable));
         }
 
         return proteinIdentifications;

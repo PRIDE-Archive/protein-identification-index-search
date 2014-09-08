@@ -5,7 +5,6 @@ import uk.ac.ebi.pride.archive.dataprovider.identification.ModificationProvider;
 import uk.ac.ebi.pride.archive.dataprovider.identification.ProteinDetailProvider;
 import uk.ac.ebi.pride.archive.dataprovider.identification.ProteinIdentificationProvider;
 import uk.ac.ebi.pride.indexutils.helpers.ModificationHelper;
-import uk.ac.ebi.pride.indexutils.modifications.Modification;
 import uk.ac.ebi.pride.proteinindex.search.util.ProteinDetailUtils;
 
 import java.util.ArrayList;
@@ -27,17 +26,20 @@ public class ProteinIdentification implements ProteinIdentificationProvider, Pro
     @Field(ProteinIdentificationFields.ACCESSION)
     private String accession;
 
-    @Field(ProteinIdentificationFields.PROJECT_ACCESSION)
-    private String projectAccession;
+    @Field(ProteinIdentificationFields.UNIPROT_MAPPING)
+    private String uniprotMapping;
 
-    @Field(ProteinIdentificationFields.ASSAY_ACCESSION)
-    private String assayAccession;
+    @Field(ProteinIdentificationFields.ENSEMBL_MAPPING)
+    private String ensemblMapping;
 
-    @Field(ProteinIdentificationFields.SYNONYMS)
-    private Set<String> synonyms;
+    @Field(ProteinIdentificationFields.OTHER_MAPPINGS)
+    private Set<String> otherMappings;
 
-    @Field(ProteinIdentificationFields.SEQUENCE)
-    private String sequence;
+    @Field(ProteinIdentificationFields.SUBMITTED_SEQUENCE)
+    private String submittedSequence;
+
+    @Field(ProteinIdentificationFields.INFERRED_SEQUENCE)
+    private String inferredSequence;
 
     @Field(ProteinIdentificationFields.DESCRIPTION)
     private List<String> description;
@@ -54,6 +56,11 @@ public class ProteinIdentification implements ProteinIdentificationProvider, Pro
     @Field(ProteinIdentificationFields.MOD_ACCESSIONS)
     private List<String> modificationAccessions;
 
+    @Field(ProteinIdentificationFields.PROJECT_ACCESSION)
+    private String projectAccession;
+
+    @Field(ProteinIdentificationFields.ASSAY_ACCESSION)
+    private String assayAccession;
 
     public String getId() {
         return id;
@@ -84,14 +91,6 @@ public class ProteinIdentification implements ProteinIdentificationProvider, Pro
         return ProteinDetailUtils.getNameFromDescription(description);
     }
 
-    public Set<String> getSynonyms() {
-        return synonyms;
-    }
-
-    public void setSynonyms(Set<String> synonyms) {
-        this.synonyms = synonyms;
-    }
-
     public String getProjectAccession() {
         return projectAccession;
     }
@@ -108,12 +107,12 @@ public class ProteinIdentification implements ProteinIdentificationProvider, Pro
         this.assayAccession = assayAccession;
     }
 
-    public String getSequence() {
-        return sequence;
+    public String getSubmittedSequence() {
+        return submittedSequence;
     }
 
-    public void setSequence(String sequence) {
-        this.sequence = sequence;
+    public void setSubmittedSequence(String submittedSequence) {
+        this.submittedSequence = submittedSequence;
     }
 
     public List<String> getDescription() {
@@ -187,4 +186,35 @@ public class ProteinIdentification implements ProteinIdentificationProvider, Pro
         modificationNames.add(modification.getName());
     }
 
+    public String getUniprotMapping() {
+        return uniprotMapping;
+    }
+
+    public void setUniprotMapping(String uniprotMapping) {
+        this.uniprotMapping = uniprotMapping;
+    }
+
+    public String getEnsemblMapping() {
+        return ensemblMapping;
+    }
+
+    public void setEnsemblMapping(String ensemblMapping) {
+        this.ensemblMapping = ensemblMapping;
+    }
+
+    public Set<String> getOtherMappings() {
+        return otherMappings;
+    }
+
+    public void setOtherMappings(Set<String> otherMappings) {
+        this.otherMappings = otherMappings;
+    }
+
+    public String getInferredSequence() {
+        return inferredSequence;
+    }
+
+    public void setInferredSequence(String inferredSequence) {
+        this.inferredSequence = inferredSequence;
+    }
 }

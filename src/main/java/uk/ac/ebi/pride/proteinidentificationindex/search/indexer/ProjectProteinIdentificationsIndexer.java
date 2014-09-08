@@ -113,7 +113,7 @@ public class ProjectProteinIdentificationsIndexer {
 
         // now we are save to assume that the catalog contains all the identified proteins
         for (ProteinIdentification proteinIdentification: proteinIdentifications) {
-            proteinIdentification.setSynonyms(new TreeSet<String>());
+            proteinIdentification.setOtherMappings(new TreeSet<String>());
             proteinIdentification.setDescription(new LinkedList<String>());
             List<ProteinIdentified> proteinsFromCatalog = proteinCatalogSearchService.findByAccession(proteinIdentification.getAccession());
             if (proteinsFromCatalog != null && proteinsFromCatalog.size() > 0) {
@@ -152,8 +152,6 @@ public class ProjectProteinIdentificationsIndexer {
             for (ProteinIdentification proteinIdentification: proteinIdentifications) {
                 ProteinIdentified newPI = new ProteinIdentified();
                 newPI.setAccession(proteinIdentification.getAccession());
-                newPI.setProjectAccessions(new TreeSet<String>()); // TODO: not needed in the future catalog
-                newPI.setAssayAccessions(new TreeSet<String>()); // TODO: not needed in the future catalog
                 res.add(newPI);
             }
             return res;
@@ -168,14 +166,16 @@ public class ProjectProteinIdentificationsIndexer {
      */
     private void saveProteinsToCatalog(List<ProteinIdentified> proteinsToCatalog) {
         this.proteinCatalogIndexService.save(proteinsToCatalog);
-        this.proteinCatalogDetailsIndexer.addSynonymsToProteins(proteinsToCatalog);
+        this.proteinCatalogDetailsIndexer.addMappingsToProteins(proteinsToCatalog);
         this.proteinCatalogDetailsIndexer.addDetailsToProteins(proteinsToCatalog);
     }
 
     private void updateProteinIdentification(ProteinIdentification proteinIdentification, ProteinIdentified proteinFromCatalog) {
-        if (proteinFromCatalog.getSynonyms() != null) proteinIdentification.getSynonyms().addAll(proteinFromCatalog.getSynonyms());
+        if (proteinFromCatalog.getUniprotMapping()!=null) proteinIdentification.setUniprotMapping(proteinFromCatalog.getUniprotMapping());
+        if (proteinFromCatalog.getEnsemblMapping()!=null) proteinIdentification.setEnsemblMapping(proteinFromCatalog.getEnsemblMapping());
+        if (proteinFromCatalog.getOtherMappings() != null) proteinIdentification.getOtherMappings().addAll(proteinFromCatalog.getOtherMappings());
         if (proteinFromCatalog.getDescription() != null) proteinIdentification.getDescription().addAll(proteinFromCatalog.getDescription());
-        proteinIdentification.setSequence(proteinFromCatalog.getSequence());
+        proteinIdentification.setInferredSequence(proteinFromCatalog.getInferredSequence());
     }
 
 

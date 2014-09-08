@@ -581,7 +581,7 @@
         
      -->
     <!-- QuerySenderListener takes an array of NamedList and executes a
-         local query request for each NamedList in sequence. 
+         local query request for each NamedList in submittedSequence.
       -->
     <listener event="newSearcher" class="solr.QuerySenderListener">
       <arr name="queries">

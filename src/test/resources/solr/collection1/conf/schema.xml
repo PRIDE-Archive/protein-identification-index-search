@@ -547,7 +547,7 @@
                 <!-- The TrimFilter removes any leading or trailing whitespace -->
                 <filter class="solr.TrimFilterFactory" />
                 <!-- The PatternReplaceFilter gives you the flexibility to use
-                     Java Regular expression to replace any sequence of characters
+                     Java Regular expression to replace any submittedSequence of characters
                      matching a pattern with an arbitrary replacement string,
                      which may include back references to portions of the original
                      string matched by the pattern.
