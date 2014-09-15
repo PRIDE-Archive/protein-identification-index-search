@@ -3,14 +3,18 @@ package uk.ac.ebi.pride.proteinidentificationindex.search.indexer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.jmztab.model.MZTabFile;
+import uk.ac.ebi.pride.proteincatalogindex.search.indexers.ProteinDetailsIndexer;
+import uk.ac.ebi.pride.proteincatalogindex.search.model.ProteinIdentified;
+import uk.ac.ebi.pride.proteincatalogindex.search.service.ProteinCatalogIndexService;
+import uk.ac.ebi.pride.proteincatalogindex.search.service.ProteinCatalogSearchService;
 import uk.ac.ebi.pride.proteinidentificationindex.search.model.ProteinIdentification;
 import uk.ac.ebi.pride.proteinidentificationindex.search.service.ProteinIdentificationIndexService;
 import uk.ac.ebi.pride.proteinidentificationindex.search.service.ProteinIdentificationSearchService;
 import uk.ac.ebi.pride.proteinidentificationindex.search.util.ProteinIdentificationMzTabBuilder;
-import uk.ac.ebi.pride.proteinindex.search.indexers.ProteinDetailsIndexer;
-import uk.ac.ebi.pride.proteinindex.search.model.ProteinIdentified;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.TreeSet;
 
 /**
  * @author Jose A. Dianes
@@ -23,14 +27,15 @@ public class ProjectProteinIdentificationsIndexer {
     private ProteinIdentificationSearchService proteinIdentificationSearchService;
     private ProteinIdentificationIndexService proteinIdentificationIndexService;
 
-    private uk.ac.ebi.pride.proteinindex.search.search.service.ProteinIdentificationSearchService proteinCatalogSearchService;
-    private uk.ac.ebi.pride.proteinindex.search.search.service.ProteinIdentificationIndexService proteinCatalogIndexService;
+    private ProteinCatalogSearchService proteinCatalogSearchService;
+    private ProteinCatalogIndexService proteinCatalogIndexService;
     private ProteinDetailsIndexer proteinCatalogDetailsIndexer;
 
 
-    public ProjectProteinIdentificationsIndexer(ProteinIdentificationSearchService proteinIdentificationSearchService, ProteinIdentificationIndexService proteinIdentificationIndexService,
-                                                uk.ac.ebi.pride.proteinindex.search.search.service.ProteinIdentificationSearchService proteinCatalogSearchService,
-                                                uk.ac.ebi.pride.proteinindex.search.search.service.ProteinIdentificationIndexService proteinCatalogIndexService,
+    public ProjectProteinIdentificationsIndexer(ProteinIdentificationSearchService proteinIdentificationSearchService,
+                                                ProteinIdentificationIndexService proteinIdentificationIndexService,
+                                                ProteinCatalogSearchService proteinCatalogSearchService,
+                                                ProteinCatalogIndexService proteinCatalogIndexService,
                                                 ProteinDetailsIndexer proteinCatalogDetailsIndexer) {
         this.proteinIdentificationSearchService = proteinIdentificationSearchService;
         this.proteinIdentificationIndexService = proteinIdentificationIndexService;

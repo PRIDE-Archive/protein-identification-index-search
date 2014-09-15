@@ -6,23 +6,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Component;
-import uk.ac.ebi.pride.jmztab.model.MZTabFile;
-import uk.ac.ebi.pride.jmztab.utils.MZTabFileParser;
 import uk.ac.ebi.pride.archive.dataprovider.file.ProjectFileProvider;
 import uk.ac.ebi.pride.archive.dataprovider.file.ProjectFileSource;
 import uk.ac.ebi.pride.archive.dataprovider.project.ProjectProvider;
 import uk.ac.ebi.pride.archive.repo.assay.AssayRepository;
 import uk.ac.ebi.pride.archive.repo.file.ProjectFileRepository;
 import uk.ac.ebi.pride.archive.repo.project.ProjectRepository;
-import uk.ac.ebi.pride.proteinindex.search.indexers.ProteinDetailsIndexer;
-import uk.ac.ebi.pride.proteinindex.search.util.ErrorLogOutputStream;
+import uk.ac.ebi.pride.jmztab.model.MZTabFile;
+import uk.ac.ebi.pride.jmztab.utils.MZTabFileParser;
+import uk.ac.ebi.pride.proteincatalogindex.search.indexers.ProteinDetailsIndexer;
+import uk.ac.ebi.pride.proteincatalogindex.search.service.ProteinCatalogIndexService;
+import uk.ac.ebi.pride.proteincatalogindex.search.service.ProteinCatalogSearchService;
+import uk.ac.ebi.pride.proteincatalogindex.search.util.ErrorLogOutputStream;
 import uk.ac.ebi.pride.proteinidentificationindex.search.indexer.ProjectProteinIdentificationsIndexer;
 import uk.ac.ebi.pride.proteinidentificationindex.search.service.ProteinIdentificationIndexService;
 import uk.ac.ebi.pride.proteinidentificationindex.search.service.ProteinIdentificationSearchService;
 
-
 import java.io.File;
-import java.io.IOException;
 import java.util.Calendar;
 
 
@@ -62,9 +62,11 @@ public class ProteinIdentificationIndexBuilder {
     private ProteinIdentificationIndexService proteinIdentificationIndexService;
 
     @Autowired
-    private uk.ac.ebi.pride.proteinindex.search.search.service.ProteinIdentificationSearchService proteinCatalogSearchService;
+    private ProteinCatalogSearchService proteinCatalogSearchService;
+
     @Autowired
-    private uk.ac.ebi.pride.proteinindex.search.search.service.ProteinIdentificationIndexService proteinCatalogIndexService;
+    private ProteinCatalogIndexService proteinCatalogIndexService;
+
     @Autowired
     private ProteinDetailsIndexer proteinCatalogDetailsIndexer;
 
@@ -88,7 +90,12 @@ public class ProteinIdentificationIndexBuilder {
         logger.info("All Protein Identifications are now DELETED");
 
         // create the indexer
-        ProjectProteinIdentificationsIndexer projectProteinIdentificationsIndexer = new ProjectProteinIdentificationsIndexer(proteinIdentificationIndexBuilder.proteinIdentificationSearchService, proteinIdentificationIndexBuilder.proteinIdentificationIndexService, proteinIdentificationIndexBuilder.proteinCatalogSearchService, proteinIdentificationIndexBuilder.proteinCatalogIndexService, proteinIdentificationIndexBuilder.proteinCatalogDetailsIndexer);
+        ProjectProteinIdentificationsIndexer projectProteinIdentificationsIndexer =
+                new ProjectProteinIdentificationsIndexer(proteinIdentificationIndexBuilder.proteinIdentificationSearchService,
+                        proteinIdentificationIndexBuilder.proteinIdentificationIndexService,
+                        proteinIdentificationIndexBuilder.proteinCatalogSearchService,
+                        proteinIdentificationIndexBuilder.proteinCatalogIndexService,
+                        proteinIdentificationIndexBuilder.proteinCatalogDetailsIndexer);
 
         // iterate through project to index psms
         for (ProjectProvider project : projects) {

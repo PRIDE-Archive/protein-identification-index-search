@@ -71,6 +71,7 @@
 
     <bean id="proteinIdentificationIndexService" class="uk.ac.ebi.pride.proteinidentificationindex.search.service.ProteinIdentificationIndexService">
         <constructor-arg value="#{ solrProteinIdentificationRepositoryFactory.create() }"/>
+        <constructor-arg name="proteinIdentificationServer" ref="solrProteinIdentificationServer"/>
     </bean>
 
 
@@ -83,20 +84,20 @@
         <constructor-arg name="solrServer" ref="solrProteinCatalogServer"/>
     </bean>
 
-    <bean id="solrProteinCatalogRepositoryFactory" class="uk.ac.ebi.pride.proteinindex.search.search.repository.SolrProteinIdentificationRepositoryFactory">
+    <bean id="solrProteinCatalogRepositoryFactory" class="uk.ac.ebi.pride.proteincatalogindex.search.service.repository.SolrProteinCatalogRepositoryFactory">
         <constructor-arg ref="solrProteinCatalogTemplate"/>
     </bean>
 
-    <bean id="proteinCatalogSearchService" class="uk.ac.ebi.pride.proteinindex.search.search.service.ProteinIdentificationSearchService">
+    <bean id="proteinCatalogSearchService" class="uk.ac.ebi.pride.proteincatalogindex.search.service.ProteinCatalogSearchService">
         <constructor-arg value="#{ solrProteinCatalogRepositoryFactory.create() }"/>
     </bean>
 
-    <bean id="proteinCatalogIndexService" class="uk.ac.ebi.pride.proteinindex.search.search.service.ProteinIdentificationIndexService">
+    <bean id="proteinCatalogIndexService" class="uk.ac.ebi.pride.proteincatalogindex.search.service.ProteinCatalogIndexService">
         <constructor-arg value="#{ solrProteinCatalogRepositoryFactory.create() }"/>
-        <constructor-arg ref="solrProteinCatalogServer"/>
+        <constructor-arg name="proteinCatalogServer" ref="solrProteinCatalogServer"/>
     </bean>
 
-    <bean id="proteinCatalogDetailsIndexer" class="uk.ac.ebi.pride.proteinindex.search.indexers.ProteinDetailsIndexer">
+    <bean id="proteinCatalogDetailsIndexer" class="uk.ac.ebi.pride.proteincatalogindex.search.indexers.ProteinDetailsIndexer">
         <constructor-arg ref="proteinCatalogSearchService" />
         <constructor-arg ref="proteinCatalogIndexService" />
     </bean>

@@ -10,7 +10,10 @@ import uk.ac.ebi.pride.jmztab.model.Protein;
 import uk.ac.ebi.pride.proteinidentificationindex.search.model.ProteinIdentification;
 import uk.ac.ebi.pride.tools.utils.AccessionResolver;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.TreeSet;
 
 /**
  * @author Jose A. Dianes
@@ -18,7 +21,9 @@ import java.util.*;
  */
 public class ProteinIdentificationMzTabBuilder {
 
-    private static Logger logger = LoggerFactory.getLogger(uk.ac.ebi.pride.proteinindex.search.util.ProteinBuilder.class.getName());
+    private static Logger logger = LoggerFactory.getLogger(ProteinIdentificationMzTabBuilder.class.getName());
+
+    public static String OPTIONAL_SEQUENCE_COLUMN   = "protein_sequence";
 
     public static List<ProteinIdentification> readProteinIdentificationsFromMzTabFile(String projectAccession, String assayAccession, MZTabFile tabFile) {
 
@@ -30,11 +35,20 @@ public class ProteinIdentificationMzTabBuilder {
             for (Protein mzTabProtein: mzTabProteins) {
                 ProteinIdentification proteinIdentification = new ProteinIdentification();
                 proteinIdentification.setId(ProteinIdentificationIdBuilder.getId(mzTabProtein.getAccession(), projectAccession, assayAccession));
-                proteinIdentification.setSynonyms(new TreeSet<String>());
+                proteinIdentification.setOtherMappings(new TreeSet<String>());
                 proteinIdentification.setSubmittedAccession(mzTabProtein.getAccession());
                 proteinIdentification.setAssayAccession(assayAccession);
                 proteinIdentification.setProjectAccession(projectAccession);
                 proteinIdentification.setAmbiguityGroupSubmittedAccessions(new LinkedList<String>());
+
+                //check if we have submitted sequence in mzTab and try to retrive it
+                if(tabFile.getProteinColumnFactory().isOptionalColumn(OPTIONAL_SEQUENCE_COLUMN)){
+                    String sequence = mzTabProtein.getOptionColumnValue(OPTIONAL_SEQUENCE_COLUMN);
+                    if(sequence != null && sequence.isEmpty()){
+                        proteinIdentification.setSubmittedSequence(sequence);
+                        logger.debug("Retrieved submitted sequence");
+                    }
+                }
                 if (mzTabProtein.getAmbiguityMembers()!=null && mzTabProtein.getAmbiguityMembers().size()>0 && !mzTabProtein.getAmbiguityMembers().get(0).equals("null")) {
                     proteinIdentification.getAmbiguityGroupSubmittedAccessions().addAll(mzTabProtein.getAmbiguityMembers());
                 }

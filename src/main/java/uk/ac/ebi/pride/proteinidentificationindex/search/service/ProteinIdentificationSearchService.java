@@ -44,11 +44,6 @@ public class ProteinIdentificationSearchService {
         return solrProteinIdentificationRepository.findByIdIn(ids);
     }
 
-    // Mapping query methods
-    public List<ProteinIdentification> findByProjectAccessionAndAnyMapping(String accession, String projectAccession) {
-        return solrProteinIdentificationRepository.findByProjectAccessionAndAnyMapping(projectAccession, accession, accession);
-    }
-
     // find by accession methods
     public List<ProteinIdentification> findByAccession(String accession) {
         return solrProteinIdentificationRepository.findByAccession(accession);
@@ -68,6 +63,11 @@ public class ProteinIdentificationSearchService {
 
     public List<ProteinIdentification> findByProjectAccession(Collection<String> projectAccessions) {
         return solrProteinIdentificationRepository.findByProjectAccessionIn(projectAccessions);
+    }
+
+    // Mapping query methods
+    public List<ProteinIdentification> findByProjectAccessionAndAnyMapping(String projectAccession, String accession) {
+        return solrProteinIdentificationRepository.findByProjectAccessionAndAnyMapping(projectAccession, accession, accession);
     }
 
     public Page<ProteinIdentification> findByProjectAccession(String projectAccession, Pageable pageable) {

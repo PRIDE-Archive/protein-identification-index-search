@@ -5,7 +5,7 @@ import uk.ac.ebi.pride.archive.dataprovider.identification.ModificationProvider;
 import uk.ac.ebi.pride.archive.dataprovider.identification.ProteinDetailProvider;
 import uk.ac.ebi.pride.archive.dataprovider.identification.ProteinIdentificationProvider;
 import uk.ac.ebi.pride.indexutils.helpers.ModificationHelper;
-import uk.ac.ebi.pride.proteinindex.search.util.ProteinDetailUtils;
+import uk.ac.ebi.pride.proteincatalogindex.search.util.ProteinDetailUtils;
 
 import java.util.ArrayList;
 import java.util.List;

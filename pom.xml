@@ -49,7 +49,7 @@
     </organization>
 
     <properties>
-        <protein.index.search.version>0.2.1-SNAPSHOT</protein.index.search.version>
+        <protein.catalog.index.search.version>0.2.1-SNAPSHOT</protein.catalog.index.search.version>
         <archive.repo.version>0.1.17-SNAPSHOT</archive.repo.version>
         <archive.data.provider.api.version>2.0.6-SNAPSHOT</archive.data.provider.api.version>
         <jmztab.version>3.0.1-SNAPSHOT</jmztab.version>
@@ -247,8 +247,8 @@
         <!-- Protein Catalog -->
         <dependency>
             <groupId>uk.ac.ebi.pride</groupId>
-            <artifactId>protein-index-search</artifactId>
-            <version>${protein.index.search.version}</version>
+            <artifactId>protein-catalog-index-search</artifactId>
+            <version>${protein.catalog.index.search.version}</version>
         </dependency>
 
         <!-- PRIDE Archive repo -->
@@ -348,9 +348,9 @@
     </repositories>
 
     <scm>
-        <connection>scm:svn:https://svn.ebi.ac.uk/pride-repo/psm-index/psm-index-search/trunk</connection>
-        <developerConnection>scm:svn:https://svn.ebi.ac.uk/pride-repo/psm-index/psm-index-search/trunk</developerConnection>
-        <url>https://svn.ebi.ac.uk/pride-repo/psm-index/psm-index-search/trunk</url>
+        <connection>scm:svn:https://svn.ebi.ac.uk/pride-repo/protein-identification-index/protein-identification-index-search/trunk</connection>
+        <developerConnection>scm:svn:https://svn.ebi.ac.uk/protein-identification-index/protein-identification-index-search/trunk</developerConnection>
+        <url>https://svn.ebi.ac.uk/pride-repo/protein-identification-index/protein-identification-index-search/trunk</url>
     </scm>
 
 </project>
