@@ -7,9 +7,7 @@ import uk.ac.ebi.pride.archive.dataprovider.identification.ProteinIdentification
 import uk.ac.ebi.pride.indexutils.helpers.ModificationHelper;
 import uk.ac.ebi.pride.proteincatalogindex.search.util.ProteinDetailUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Jose A. Dianes
@@ -184,6 +182,24 @@ public class ProteinIdentification implements ProteinIdentificationProvider, Pro
         modificationsAsString.add(ModificationHelper.convertToString(modification));
         modificationAccessions.add(modification.getAccession());
         modificationNames.add(modification.getName());
+    }
+
+    public Set<String> getModificationNames() {
+
+        Set<String> modificationNamesSet = new TreeSet<String>();
+        if (modificationNames != null) {
+            modificationNamesSet.addAll(modificationNames);
+        }
+        return modificationNamesSet;
+    }
+
+    public Set<String> getModificationAccessions() {
+
+        Set<String> modificationAccessionsSet = new TreeSet<String>();
+        if (modificationAccessions != null) {
+            modificationAccessionsSet.addAll(modificationAccessions);
+        }
+        return modificationAccessionsSet;
     }
 
     public String getUniprotMapping() {
