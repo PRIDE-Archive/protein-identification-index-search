@@ -202,6 +202,19 @@ public class ProteinIdentification implements ProteinIdentificationProvider, Pro
         return modificationAccessionsSet;
     }
 
+    public Map<String, String> getModificationAccessionName() {
+
+        Map<String, String> modificationAccessionsNameMap = new TreeMap<String, String>();
+        if (modificationNames != null && modificationAccessions != null) {
+            if (modificationNames.size() == modificationAccessions.size()) {
+                for (int i = 0; i < modificationNames.size(); i++) {
+                    modificationAccessionsNameMap.put(modificationNames.get(i), modificationAccessions.get(i));
+                }
+            }
+        }
+        return modificationAccessionsNameMap;
+    }
+
     public String getUniprotMapping() {
         return uniprotMapping;
     }
