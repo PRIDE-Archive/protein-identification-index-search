@@ -54,7 +54,7 @@
         <archive.data.provider.api.version>2.0.6</archive.data.provider.api.version>
         <archive.utils.version>0.1.11</archive.utils.version>
         <accession.resolver.version>1.0.1</accession.resolver.version>
-        <index.utils.version>0.1.0</index.utils.version>
+        <index.utils.version>0.1.1-SNAPSHOT</index.utils.version>
     </properties>
 
     <build>

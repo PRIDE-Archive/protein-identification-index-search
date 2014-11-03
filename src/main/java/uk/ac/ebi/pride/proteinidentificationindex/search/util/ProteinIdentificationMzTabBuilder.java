@@ -28,6 +28,7 @@ public class ProteinIdentificationMzTabBuilder {
     public static List<ProteinIdentification> readProteinIdentificationsFromMzTabFile(String projectAccession, String assayAccession, MZTabFile tabFile) {
 
         List<ProteinIdentification> res = new LinkedList<ProteinIdentification>();
+        String sequence;
 
         if (tabFile != null) {
             // get proteins
@@ -42,13 +43,13 @@ public class ProteinIdentificationMzTabBuilder {
                 proteinIdentification.setAmbiguityGroupSubmittedAccessions(new LinkedList<String>());
 
                 //check if we have submitted sequence in mzTab and try to retrive it
-                if(tabFile.getProteinColumnFactory().isOptionalColumn(OPTIONAL_SEQUENCE_COLUMN)){
-                    String sequence = mzTabProtein.getOptionColumnValue(OPTIONAL_SEQUENCE_COLUMN);
-                    if(sequence != null && sequence.isEmpty()){
+                if((sequence = mzTabProtein.getOptionColumnValue(OPTIONAL_SEQUENCE_COLUMN))!= null){
+                    if(!sequence.isEmpty()){
                         proteinIdentification.setSubmittedSequence(sequence);
                         logger.debug("Retrieved submitted sequence");
                     }
                 }
+
                 if (mzTabProtein.getAmbiguityMembers()!=null && mzTabProtein.getAmbiguityMembers().size()>0 && !mzTabProtein.getAmbiguityMembers().get(0).equals("null")) {
                     proteinIdentification.getAmbiguityGroupSubmittedAccessions().addAll(mzTabProtein.getAmbiguityMembers());
                 }
