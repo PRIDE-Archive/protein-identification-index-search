@@ -10,7 +10,7 @@
     <groupId>uk.ac.ebi.pride</groupId>
     <artifactId>protein-identification-index-search</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.1-REDUCED_SCHEMA-SNAPSHOT</version>
     <name>protein-identification-index-search</name>
     <url>https://github.com/PRIDE-Archive/protein-identification-index-service</url>
 

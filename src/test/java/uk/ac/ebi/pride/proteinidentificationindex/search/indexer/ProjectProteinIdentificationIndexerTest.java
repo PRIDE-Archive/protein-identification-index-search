@@ -36,8 +36,6 @@ public class ProjectProteinIdentificationIndexerTest extends SolrTestCaseJ4 {
     private static final String TEST_SUBMITTED_AC = "D0NNB3";
 
     private static final String TEST_PROTEIN_ACCESSION = "D0NNB3";
-    private static final String TEST_PROTEIN_NAME_FIELD = "NAME####Putative uncharacterized protein";
-    private static final String TEST_PROTEIN_SEQ_STARTS_WITH = "MSSEEVVVAVEEQEIPDVIERL";
     private static SolrServer server;
 
     private static SolrProteinIdentificationRepositoryFactory solrProteinIdentificationRepositoryFactory;
@@ -64,7 +62,6 @@ public class ProjectProteinIdentificationIndexerTest extends SolrTestCaseJ4 {
         super.setUp();
         server = new EmbeddedSolrServer(h.getCoreContainer(), h.getCore().getName());
         server.deleteByQuery("*:*");
-
         solrProteinIdentificationRepositoryFactory = new SolrProteinIdentificationRepositoryFactory(new SolrTemplate(server));
     }
 
@@ -93,8 +90,6 @@ public class ProjectProteinIdentificationIndexerTest extends SolrTestCaseJ4 {
         assertNotNull(proteins.get(0));
         assertEquals(proteins.get(0).getId(), TEST_ID);
         assertEquals(proteins.get(0).getAccession(), TEST_PROTEIN_ACCESSION);
-        assertEquals(proteins.get(0).getSubmittedAccession(), TEST_SUBMITTED_AC);
-        assertTrue(proteins.get(0).getSubmittedSequence().equals(TEST_SUBMITTED_SEQ));
 
     }
 
@@ -104,10 +99,6 @@ public class ProjectProteinIdentificationIndexerTest extends SolrTestCaseJ4 {
         ProteinIdentification proteinIdentification = new ProteinIdentification();
         proteinIdentification.setId(TEST_ID);
         proteinIdentification.setAccession(TEST_PROTEIN_ACCESSION);
-        proteinIdentification.setSubmittedAccession(TEST_SUBMITTED_AC);
-        proteinIdentification.setSubmittedSequence(TEST_SUBMITTED_SEQ);
         proteinIdentificationIndexService.save(proteinIdentification);
     }
-
-
 }
