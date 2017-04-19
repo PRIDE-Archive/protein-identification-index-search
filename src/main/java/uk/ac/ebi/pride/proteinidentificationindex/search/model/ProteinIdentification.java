@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.proteinidentificationindex.search.model;
 
 import org.apache.solr.client.solrj.beans.Field;
+import uk.ac.ebi.pride.archive.dataprovider.identification.IdentificationProvider;
 import uk.ac.ebi.pride.archive.dataprovider.identification.ModificationProvider;
 import uk.ac.ebi.pride.indexutils.helpers.ModificationHelper;
 
@@ -10,7 +11,7 @@ import java.util.*;
  * @author Jose A. Dianes
  * @version $Id$
  */
-public class ProteinIdentification {
+public class ProteinIdentification implements IdentificationProvider {
 
   @Field(ProteinIdentificationFields.ID)
   private String id;
