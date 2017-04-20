@@ -49,12 +49,12 @@ public interface SolrProteinIdentificationRepository extends SolrCrudRepository<
     @Query("project_accession:(?0)")
     Page<ProteinIdentification> findByProjectAccessionIn(Collection<String> projectAccessions, Pageable pageable);
 
-    @Query("peptide_sequence:?0 AND assay_accession:?1")
+    @Query("project_accession:?0 AND assay_accession:?1")
     List<ProteinIdentification> findByProjectAccessionAndAccession(String projectAccession, String accession);
-    @Query("peptide_sequence:?0 AND assay_accession:?1")
+    @Query("project_accession:?0 AND assay_accession:?1")
     Page<ProteinIdentification> findByProjectAccessionAndAccession(String projectAccession, String accession, Pageable pageable);
-    @Query("peptide_sequence:?0 AND assay_accession:?1")
-    Long countByProjectAccessionAndAccession(String peptideSequence, String accession);
+    @Query("project_accession:?0 AND assay_accession:?1")
+    Long countByProjectAccessionAndAccession(String projectAccession, String accession);
 
     @Query(value = "project_accession:?0", filters = "mod_names:(?1)", defaultOperator = AND)
     Page<ProteinIdentification> findByProjectAccessionAndFilterModNames(String projectAccessions, List<String> modNameFilters, Pageable pageable);
