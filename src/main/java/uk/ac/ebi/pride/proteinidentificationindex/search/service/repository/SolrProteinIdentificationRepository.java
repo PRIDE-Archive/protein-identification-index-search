@@ -39,6 +39,7 @@ public interface SolrProteinIdentificationRepository extends SolrCrudRepository<
     List<ProteinIdentification> findByAccessionIn(Collection<String> accession);
 
     // Project accession query methods
+    @Query("project_accession:?0")
     Long countByProjectAccession(String projectAccession);
     @Query("project_accession:?0")
     List<ProteinIdentification> findByProjectAccession(String projectAccession);
