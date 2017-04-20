@@ -113,7 +113,7 @@ public class ProteinIdentificationSearchService {
    * @return a map with the mod_names and the number of hits per mod_synonym
    */
   public Map<String, Long> findByAssayAccessionFacetOnModificationNames(String assayAccession, String term, List<String> modNameFilters) {
-    Map<String, Long> modificationsCount = new TreeMap<String, Long>();
+    Map<String, Long> modificationsCount = new TreeMap<>();
     FacetPage<ProteinIdentification> proteinIdentifications;
     if ((term == null || term.isEmpty()) && (modNameFilters == null || modNameFilters.isEmpty())) {
       proteinIdentifications = solrProteinIdentificationRepository.findByAssayAccessionFacetModNames(assayAccession, new PageRequest(0, 1));
@@ -140,7 +140,7 @@ public class ProteinIdentificationSearchService {
    * @return a map with the mod_names and the number of hits per mod_synonym
    */
   public Map<String, Long> findByProjectAccessionFacetOnModificationNames(String projectAccession, String term, List<String> modNameFilters) {
-    Map<String, Long> modificationsCount = new TreeMap<String, Long>();
+    Map<String, Long> modificationsCount = new TreeMap<>();
     FacetPage<ProteinIdentification> proteinIdentifications;
     if ((term == null || term.isEmpty()) && (modNameFilters == null || modNameFilters.isEmpty())) {
       proteinIdentifications = solrProteinIdentificationRepository.findByProjectAccessionFacetModNames(projectAccession, new PageRequest(0, 1));
@@ -172,13 +172,13 @@ public class ProteinIdentificationSearchService {
       String assayAccession, String term, List<String> modNameFilters, Pageable pageable) {
     PageWrapper<ProteinIdentification> proteinIdentifications;
     if ((term == null || term.isEmpty()) && (modNameFilters == null || modNameFilters.isEmpty())) {
-      proteinIdentifications = new PageWrapper<ProteinIdentification>(solrProteinIdentificationRepository.findByAssayAccession(assayAccession, pageable));
+      proteinIdentifications = new PageWrapper<>(solrProteinIdentificationRepository.findByAssayAccession(assayAccession, pageable));
     } else if ((term != null && !term.isEmpty()) && (modNameFilters == null || modNameFilters.isEmpty())) {
-      proteinIdentifications = new PageWrapper<ProteinIdentification>(solrProteinIdentificationRepository.findByAssayAccessionHighlights(assayAccession, term, term, pageable));
+      proteinIdentifications = new PageWrapper<>(solrProteinIdentificationRepository.findByAssayAccessionHighlights(assayAccession, term, term, pageable));
     } else if ((term == null || term.isEmpty()) && (modNameFilters != null && !modNameFilters.isEmpty())) {
-      proteinIdentifications = new PageWrapper<ProteinIdentification>(solrProteinIdentificationRepository.findByAssayAccessionAndFilterModNames(assayAccession, modNameFilters, pageable));
+      proteinIdentifications = new PageWrapper<>(solrProteinIdentificationRepository.findByAssayAccessionAndFilterModNames(assayAccession, modNameFilters, pageable));
     } else {
-      proteinIdentifications = new PageWrapper<ProteinIdentification>(solrProteinIdentificationRepository.findByAssayAccessionHighlightsAndFilterModNames(assayAccession, term, term, modNameFilters, pageable));
+      proteinIdentifications = new PageWrapper<>(solrProteinIdentificationRepository.findByAssayAccessionHighlightsAndFilterModNames(assayAccession, term, term, modNameFilters, pageable));
     }
     return proteinIdentifications;
   }
@@ -196,13 +196,13 @@ public class ProteinIdentificationSearchService {
       String projectAccession, String term, List<String> modNameFilters, Pageable pageable) {
     PageWrapper<ProteinIdentification> proteinIdentifications;
     if ((term == null || term.isEmpty()) && (modNameFilters == null || modNameFilters.isEmpty())) {
-      proteinIdentifications = new PageWrapper<ProteinIdentification>(solrProteinIdentificationRepository.findByProjectAccession(projectAccession, pageable));
+      proteinIdentifications = new PageWrapper<>(solrProteinIdentificationRepository.findByProjectAccession(projectAccession, pageable));
     } else if ((term != null && !term.isEmpty()) && (modNameFilters == null || modNameFilters.isEmpty())) {
-      proteinIdentifications = new PageWrapper<ProteinIdentification>(solrProteinIdentificationRepository.findByProjectAccessionHighlights(projectAccession, term, term, pageable));
+      proteinIdentifications = new PageWrapper<>(solrProteinIdentificationRepository.findByProjectAccessionHighlights(projectAccession, term, term, pageable));
     } else if ((term == null || term.isEmpty()) && (modNameFilters != null && !modNameFilters.isEmpty())) {
-      proteinIdentifications = new PageWrapper<ProteinIdentification>(solrProteinIdentificationRepository.findByProjectAccessionAndFilterModNames(projectAccession, modNameFilters, pageable));
+      proteinIdentifications = new PageWrapper<>(solrProteinIdentificationRepository.findByProjectAccessionAndFilterModNames(projectAccession, modNameFilters, pageable));
     } else {
-      proteinIdentifications = new PageWrapper<ProteinIdentification>(solrProteinIdentificationRepository.findByProjectAccessionHighlightsAndFilterModNames(projectAccession, term, term, modNameFilters, pageable));
+      proteinIdentifications = new PageWrapper<>(solrProteinIdentificationRepository.findByProjectAccessionHighlightsAndFilterModNames(projectAccession, term, term, modNameFilters, pageable));
     }
     return proteinIdentifications;
   }
@@ -213,11 +213,9 @@ public class ProteinIdentificationSearchService {
 
   public Set<String> getUniqueProteinAccessionsByProjectAccession(String projectAccession) {
     List<ProteinIdentificationSummary> results = findSummaryByProjectAccession(projectAccession);
-    Set<String> accessions = new HashSet<String>(results.size());
-    Iterator<ProteinIdentificationSummary> iterator = results.iterator();
-    while (iterator.hasNext()) {
-      // in order to make it work we need to cast to the real bean before accessing data
-      ProteinIdentification ident = (ProteinIdentification) iterator.next();
+    Set<String> accessions = new HashSet<>(results.size());
+    for (ProteinIdentificationSummary result : results) {
+      ProteinIdentification ident = (ProteinIdentification) result; // need to cast to the real bean before accessing data
       accessions.add(ident.getAccession());
     }
     return accessions;
@@ -229,11 +227,9 @@ public class ProteinIdentificationSearchService {
 
   public Set<String> getUniqueProteinAccessionsByAssayAccession(String assayAccession) {
     List<ProteinIdentificationSummary> results = findSummaryByAssayAccession(assayAccession);
-    Set<String> accessions = new HashSet<String>(results.size());
-    Iterator<ProteinIdentificationSummary> iterator = results.iterator();
-    while (iterator.hasNext()) {
-      // in order to make it work we need to cast to the real bean before accessing data
-      ProteinIdentification ident = (ProteinIdentification) iterator.next();
+    Set<String> accessions = new HashSet<>(results.size());
+    for (ProteinIdentificationSummary result : results) {
+      ProteinIdentification ident = (ProteinIdentification) result; // need to cast to the real bean before accessing data
       accessions.add(ident.getAccession());
     }
     return accessions;
