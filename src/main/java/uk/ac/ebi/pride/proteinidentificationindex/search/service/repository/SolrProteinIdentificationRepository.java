@@ -39,7 +39,6 @@ public interface SolrProteinIdentificationRepository extends SolrCrudRepository<
     List<ProteinIdentification> findByAccessionIn(Collection<String> accession);
 
     // Project accession query methods
-    @Query("project_accession:?0")
     Long countByProjectAccession(String projectAccession);
     @Query("project_accession:?0")
     List<ProteinIdentification> findByProjectAccession(String projectAccession);
@@ -54,7 +53,6 @@ public interface SolrProteinIdentificationRepository extends SolrCrudRepository<
     List<ProteinIdentification> findByProjectAccessionAndAccession(String projectAccession, String accession);
     @Query("project_accession:?0 AND accession:?1")
     Page<ProteinIdentification> findByProjectAccessionAndAccession(String projectAccession, String accession, Pageable pageable);
-    @Query("project_accession:?0 AND accession:?1")
     Long countByProjectAccessionAndAccession(String projectAccession, String accession);
 
     @Query(value = "project_accession:?0", filters = "mod_names:(?1)", defaultOperator = AND)
