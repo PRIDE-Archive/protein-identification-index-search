@@ -14,7 +14,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.solr.core.SolrTemplate;
+import uk.ac.ebi.pride.indexutils.results.PageWrapper;
 import uk.ac.ebi.pride.proteinidentificationindex.search.model.ProteinIdentification;
 import uk.ac.ebi.pride.proteinidentificationindex.search.service.ProteinIdentificationIndexService;
 import uk.ac.ebi.pride.proteinidentificationindex.search.service.ProteinIdentificationSearchService;
@@ -39,9 +41,12 @@ public class ProjectProteinIdentificationIndexerTest extends SolrTestCaseJ4 {
   private static final String TEST_PROTEIN_ACCESSION = "D0NNB3";
   private static SolrServer server;
 
+  private static final String HIGHLIGHT_PRE_FRAGMENT = "<span class='search-hit'>";
+  private static final String HIGHLIGHT_POST_FRAGMENT = "</span>";
+
   private static SolrProteinIdentificationRepositoryFactory solrProteinIdentificationRepositoryFactory;
 
-  public static final long ZERO_DOCS = 0L;
+  private static final long ZERO_DOCS = 0L;
 
   @BeforeClass
   public static void initialise() throws Exception {
@@ -91,6 +96,18 @@ public class ProjectProteinIdentificationIndexerTest extends SolrTestCaseJ4 {
     assertEquals(count.longValue(), 1L);
     count = proteinIdentificationSearchService.countByProjectAccessionAndAccession(TEST_PROJ_ACCESSION, TEST_PROTEIN_ACCESSION);
     assertEquals(count.longValue(), 1L);
+
+    PageWrapper<ProteinIdentification> highlightPage =
+        proteinIdentificationSearchService.findByProjectAccessionHighlightsOnModificationNames(TEST_PROJ_ACCESSION,
+            null, null, new PageRequest(0,10));
+    assertNotNull(highlightPage);
+    assertEquals(0, highlightPage.getHighlights().size());
+    highlightPage =
+        proteinIdentificationSearchService.findByProjectAccessionHighlightsOnModificationNames(TEST_PROJ_ACCESSION,
+            TEST_PROTEIN_ACCESSION, null, new PageRequest(0,10));
+    assertNotNull(highlightPage);
+    assertEquals(TEST_PROTEIN_ACCESSION, highlightPage.getHighlights().entrySet().iterator().next().getKey().getAccession());
+    assertEquals(HIGHLIGHT_PRE_FRAGMENT + TEST_PROTEIN_ACCESSION + HIGHLIGHT_POST_FRAGMENT, highlightPage.getHighlights().entrySet().iterator().next().getValue().entrySet().iterator().next().getValue().get(0));
   }
 
 

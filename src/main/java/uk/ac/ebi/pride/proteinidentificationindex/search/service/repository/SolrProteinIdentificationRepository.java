@@ -59,12 +59,12 @@ public interface SolrProteinIdentificationRepository extends SolrCrudRepository<
     Page<ProteinIdentification> findByProjectAccessionAndFilterModNames(String projectAccessions, List<String> modNameFilters, Pageable pageable);
 
     @Highlight(prefix = HIGHLIGHT_PRE_FRAGMENT, postfix = HIGHLIGHT_POST_FRAGMENT, fields = {"accession"})
-    @Query(value = "project_accession:?0 AND (submitted_accession:?1 OR accession:?1 OR uniprot_mapping:?1 OR ensembl_mapping:?1 OR ambiguity_group:?1 OR other_mappings:?2)")
-    HighlightPage<ProteinIdentification> findByProjectAccessionHighlights(String projectAccessions, @Boost(TERM_BOOST) String term, @Boost(SECONDARY_TERM_BOOST) String secondaryTerm, Pageable pageable);
+    @Query(value = "project_accession:?0 AND accession:?1")
+    HighlightPage<ProteinIdentification> findByProjectAccessionHighlights(String projectAccessions, String term, Pageable pageable);
 
     @Highlight(prefix = HIGHLIGHT_PRE_FRAGMENT, postfix = HIGHLIGHT_POST_FRAGMENT, fields = {"accession"})
-    @Query(value = "project_accession:?0 AND (submitted_accession:?1 OR accession:?1 OR uniprot_mapping:?1 OR ensembl_mapping:?1 OR ambiguity_group:?1 OR other_mappings:?2)", filters = "mod_names:(?3)", defaultOperator = AND)
-    HighlightPage<ProteinIdentification> findByProjectAccessionHighlightsAndFilterModNames(String projectAccessions, @Boost(TERM_BOOST) String term, @Boost(SECONDARY_TERM_BOOST) String secondaryTerm, List<String> modNameFilters, Pageable pageable);
+    @Query(value = "project_accession:?0 AND accession:?1", filters = "mod_names:(?2)", defaultOperator = AND)
+    HighlightPage<ProteinIdentification> findByProjectAccessionHighlightsAndFilterModNames(String projectAccessions, String term, List<String> modNameFilters, Pageable pageable);
 
     @Facet(fields = {"mod_names"}, limit = 100)
     @Query(value = "project_accession:?0")
@@ -72,7 +72,7 @@ public interface SolrProteinIdentificationRepository extends SolrCrudRepository<
 
     @Facet(fields = {"mod_names"}, limit = 100)
     @Query(value = "project_accession:?0 AND accession:?1")
-    FacetPage<ProteinIdentification> findByProjectAccessionFacetModNames(String projectAccessions, @Boost(TERM_BOOST) String term, @Boost(SECONDARY_TERM_BOOST) String secondaryTerm, Pageable pageable);
+    FacetPage<ProteinIdentification> findByProjectAccessionFacetModNames(String projectAccessions, String term, Pageable pageable);
 
     @Facet(fields = {"mod_names"}, limit = 100)
     @Query(value = "project_accession:?0", filters = "mod_names:(?1)", defaultOperator = AND)
@@ -80,8 +80,7 @@ public interface SolrProteinIdentificationRepository extends SolrCrudRepository<
 
     @Facet(fields = {"mod_names"}, limit = 100)
     @Query(value = "project_accession:?0 AND accession:?1", filters = "mod_names:(?2)", defaultOperator = AND)
-    FacetPage<ProteinIdentification> findByProjectAccessionFacetModNamesAndFilterModNames(String projectAccessions, @Boost(TERM_BOOST) String term, @Boost(SECONDARY_TERM_BOOST) String secondaryTerm, List<String> modNameFilters, Pageable pageable);
-
+    FacetPage<ProteinIdentification> findByProjectAccessionFacetModNamesAndFilterModNames(String projectAccessions, String term, List<String> modNameFilters, Pageable pageable);
 
     // Assay accession query methods
     Long countByAssayAccession(String assayAccession);
@@ -102,7 +101,7 @@ public interface SolrProteinIdentificationRepository extends SolrCrudRepository<
     HighlightPage<ProteinIdentification> findByAssayAccessionHighlights(String assayAccession, @Boost(TERM_BOOST) String term, @Boost(SECONDARY_TERM_BOOST) String secondaryTerm, Pageable pageable);
 
     @Highlight(prefix = HIGHLIGHT_PRE_FRAGMENT, postfix = HIGHLIGHT_POST_FRAGMENT, fields = {"accession"})
-    @Query(value = "assay_accession:?0 AND  accession:?1)", filters = "mod_names:(?2)", defaultOperator = AND)
+    @Query(value = "assay_accession:?0 AND  accession:?1", filters = "mod_names:(?2)", defaultOperator = AND)
     HighlightPage<ProteinIdentification> findByAssayAccessionHighlightsAndFilterModNames(String assayAccession, @Boost(TERM_BOOST) String term, @Boost(SECONDARY_TERM_BOOST) String secondaryTerm, List<String> modNameFilters, Pageable pageable);
 
     @Facet(fields = {"mod_names"}, limit = 100)
