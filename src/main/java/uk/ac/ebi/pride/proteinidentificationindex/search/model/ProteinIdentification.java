@@ -21,6 +21,7 @@ public class ProteinIdentification implements IdentificationProvider {
 
   @Field(ProteinIdentificationFields.MOD_NAMES)
   private List<String> modificationNames;
+
   @Field(ProteinIdentificationFields.PROJECT_ACCESSION)
   private String projectAccession;
 
