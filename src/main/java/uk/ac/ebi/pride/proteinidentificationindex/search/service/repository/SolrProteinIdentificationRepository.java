@@ -92,6 +92,11 @@ public interface SolrProteinIdentificationRepository extends SolrCrudRepository<
     Page<ProteinIdentification> findByAssayAccession(String assayAccession, Pageable pageable);
     @Query("assay_accession:(?0)")
     Page<ProteinIdentification> findByAssayAccessionIn(Collection<String> assayAccessions, Pageable pageable);
+    @Query("assay_accession:?0 AND accession:?1")
+    List<ProteinIdentification> findByAssayAccessionAndAccession(String assayAccession, String accession);
+    @Query("assay_accession:?0 AND accession:?1")
+    Page<ProteinIdentification> findByAssayAccessionAndAccession(String assayAccession, String accession, Pageable pageable);
+    Long countByAssayAccessionAndAccession(String assayAccession, String accession);
 
     @Query(value = "assay_accession:?0", filters = "mod_names:(?1)", defaultOperator = AND)
     Page<ProteinIdentification> findByAssayAccessionAndFilterModNames(String assayAccession, List<String> modNameFilters, Pageable pageable);

@@ -28,7 +28,7 @@ public class ProteinIdentificationMzTabBuilder {
         proteinIdentification.setId(ProteinIdentificationIdBuilder.getId(mzTabProtein.getAccession(), projectAccession, assayAccession));
         proteinIdentification.setAssayAccession(assayAccession);
         proteinIdentification.setProjectAccession(projectAccession);
-        proteinIdentification.setModificationNames(new ArrayList<>());
+        proteinIdentification.setModificationNames(new ArrayList<ModificationProvider>());
         if (mzTabProtein.getModifications()!=null && mzTabProtein.getModifications().size()>0 && !mzTabProtein.getModifications().get(0).toString().equalsIgnoreCase("null")) {
           for (Modification mod: mzTabProtein.getModifications())
             proteinIdentification.addModificationName(ModificationHelper.convertToModificationProvider(mod));

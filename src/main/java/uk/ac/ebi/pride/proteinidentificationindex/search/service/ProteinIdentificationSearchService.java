@@ -105,6 +105,18 @@ public class ProteinIdentificationSearchService {
     return solrProteinIdentificationRepository.findByAssayAccessionIn(assayAccessions, pageable);
   }
 
+  public List<ProteinIdentification> findByAssayAccessionAndAccession(String assayAccession, String accession) {
+    return solrProteinIdentificationRepository.findByAssayAccessionAndAccession(assayAccession, accession);
+  }
+
+  public Page<ProteinIdentification> findByAssayAccessionAndAccession(String assayAccession, String accession, Pageable pageable) {
+    return solrProteinIdentificationRepository.findByAssayAccessionAndAccession(assayAccession, accession, pageable);
+  }
+
+  public Long countByAssayAccessionAndAccession(String assayAccession, String accession) {
+    return solrProteinIdentificationRepository.countByAssayAccessionAndAccession(assayAccession, accession);
+  }
+
   /**
    * Count the facets per modification name
    * @param assayAccession mandatory
