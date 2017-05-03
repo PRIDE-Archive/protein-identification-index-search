@@ -10,7 +10,7 @@
     <groupId>uk.ac.ebi.pride</groupId>
     <artifactId>protein-identification-index-search</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.1-REDUCED_SCHEMA-SNAPSHOT</version>
+    <version>1.0.1-SNAPSHOT</version>
     <name>protein-identification-index-search</name>
     <url>https://github.com/PRIDE-Archive/protein-identification-index-service</url>
 
@@ -27,8 +27,8 @@
     -->
 
     <properties>
-        <protein.catalog.index.search.version>1.0.1-SNAPSHOT</protein.catalog.index.search.version>
-        <archive.repo.version>0.1.20-SNAPSHOT</archive.repo.version>
+        <protein.catalog.index.search.version>1.0.1</protein.catalog.index.search.version>
+        <archive.repo.version>1.0.0</archive.repo.version>
         <archive.data.provider.api.version>2.0.9</archive.data.provider.api.version>
         <archive.utils.version>0.1.21</archive.utils.version>
         <accession.resolver.version>1.0.1</accession.resolver.version>
