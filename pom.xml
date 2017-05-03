@@ -27,8 +27,8 @@
     -->
 
     <properties>
-        <protein.catalog.index.search.version>1.0.0</protein.catalog.index.search.version>
-        <archive.repo.version>0.1.19</archive.repo.version>
+        <protein.catalog.index.search.version>1.0.1</protein.catalog.index.search.version>
+        <archive.repo.version>1.0.0</archive.repo.version>
         <archive.data.provider.api.version>2.0.9</archive.data.provider.api.version>
         <archive.utils.version>0.1.21</archive.utils.version>
         <accession.resolver.version>1.0.1</accession.resolver.version>

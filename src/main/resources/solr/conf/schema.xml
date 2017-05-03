@@ -99,18 +99,8 @@
 
         <!-- identifier for each document: the protein submittedAccession -->
         <field name="id" type="string" indexed="true" stored="true" required="true" multiValued="false"/>
-        <field name="submitted_accession" type="string" indexed="true" stored="true" required="true" multiValued="false"/>
         <field name="accession" type="string" indexed="true" stored="true" required="true" multiValued="false"/>
-        <field name="uniprot_mapping" type="text_ws" indexed="true" stored="true" required="false" multiValued="false"/>
-        <field name="ensembl_mapping" type="text_ws" indexed="true" stored="true" required="false" multiValued="false"/>
-        <field name="other_mappings" type="text_ws" indexed="true" stored="true" required="false" multiValued="true"/>
-        <field name="submitted_sequence" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
-        <field name="inferred_sequence" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
-        <field name="description" type="text_ws" indexed="true" stored="true" required="false" multiValued="true"/>
-        <field name="ambiguity_group" type="string" indexed="true" stored="true" required="false" multiValued="true"/>
-        <field name="modifications" type="text_ws" indexed="true" stored="true" required="false" multiValued="true"/>
         <field name="mod_names" type="string" indexed="true" stored="true" required="false" multiValued="true"/>
-        <field name="mod_accessions" type="string" indexed="true" stored="true" required="false" multiValued="true"/>
         <field name="project_accession" type="string" indexed="true" stored="true" required="false" multiValued="false" />
         <field name="assay_accession" type="string" indexed="true" stored="true" required="false" multiValued="false" />
 

@@ -9,24 +9,21 @@ import java.util.List;
  */
 public class ProteinDetailUtils {
 
-    public static final String NAME = "NAME####";
+  public static final String NAME = "NAME####";
 
-    public static String extractInformationByType(List<String> description, String type){
-
-        String info = null;
-
-        if(description != null){
-            for (String s : description){
-                if(s.startsWith(type)){
-                    info = s.split(type)[1];
-                }
-            }
+  public static String extractInformationByType(List<String> description, String type){
+    String info = null;
+    if(description != null){
+      for (String s : description){
+        if(s.startsWith(type)){
+          info = s.split(type)[1];
         }
-
-        return info;
+      }
     }
+    return info;
+  }
 
-    public static String getNameFromDescription(List<String> description){
-        return extractInformationByType(description, NAME);
-    }
+  public static String getNameFromDescription(List<String> description){
+    return extractInformationByType(description, NAME);
+  }
 }
