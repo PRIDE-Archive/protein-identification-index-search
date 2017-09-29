@@ -10,7 +10,7 @@
     <groupId>uk.ac.ebi.pride</groupId>
     <artifactId>protein-identification-index-search</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>1.0.2-SNAPSHOT-ORCID</version>
     <name>protein-identification-index-search</name>
     <url>https://github.com/PRIDE-Archive/protein-identification-index-search</url>
 
@@ -27,12 +27,12 @@
     -->
 
     <properties>
-        <protein.catalog.index.search.version>1.0.1</protein.catalog.index.search.version>
-        <archive.repo.version>1.0.0</archive.repo.version>
-        <archive.data.provider.api.version>2.0.9</archive.data.provider.api.version>
-        <archive.utils.version>0.1.21</archive.utils.version>
+        <protein.catalog.index.search.version>1.0.2-SNAPSHOT-ORCID</protein.catalog.index.search.version>
+        <archive.repo.version>1.0.1-SNAPSHOT-ORCID</archive.repo.version>
+        <archive.data.provider.api.version>2.0.10-SNAPSHOT-ORCID</archive.data.provider.api.version>
+        <archive.utils.version>0.1.22-SNAPSHOT-ORCID</archive.utils.version>
         <accession.resolver.version>1.0.1</accession.resolver.version>
-        <index.utils.version>1.0.0</index.utils.version>
+        <index.utils.version>1.0.1-SNAPSHOT-ORCID</index.utils.version>
     </properties>
 
     <build>
