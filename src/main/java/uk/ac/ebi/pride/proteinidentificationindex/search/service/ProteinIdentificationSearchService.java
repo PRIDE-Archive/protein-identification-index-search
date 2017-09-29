@@ -226,8 +226,10 @@ public class ProteinIdentificationSearchService {
   public Set<String> getUniqueProteinAccessionsByProjectAccession(String projectAccession) {
     List<ProteinIdentificationSummary> results = findSummaryByProjectAccession(projectAccession);
     Set<String> accessions = new HashSet<>(results.size());
-    for (ProteinIdentificationSummary result : results) {
-      ProteinIdentification ident = (ProteinIdentification) result; // need to cast to the real bean before accessing data
+    Iterator<ProteinIdentificationSummary> iterator = results.iterator();
+    while (iterator.hasNext()) {
+      // in order to make it work we need to cast to the real bean before accessing data
+      ProteinIdentification ident = (ProteinIdentification) iterator.next();
       accessions.add(ident.getAccession());
     }
     return accessions;
@@ -240,8 +242,10 @@ public class ProteinIdentificationSearchService {
   public Set<String> getUniqueProteinAccessionsByAssayAccession(String assayAccession) {
     List<ProteinIdentificationSummary> results = findSummaryByAssayAccession(assayAccession);
     Set<String> accessions = new HashSet<>(results.size());
-    for (ProteinIdentificationSummary result : results) {
-      ProteinIdentification ident = (ProteinIdentification) result; // need to cast to the real bean before accessing data
+    Iterator<ProteinIdentificationSummary> iterator = results.iterator();
+    while (iterator.hasNext()) {
+      // in order to make it work we need to cast to the real bean before accessing data
+      ProteinIdentification ident = (ProteinIdentification) iterator.next();
       accessions.add(ident.getAccession());
     }
     return accessions;
