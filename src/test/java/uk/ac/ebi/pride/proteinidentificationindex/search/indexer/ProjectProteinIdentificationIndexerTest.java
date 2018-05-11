@@ -108,6 +108,7 @@ public class ProjectProteinIdentificationIndexerTest extends SolrTestCaseJ4 {
     assertNotNull(highlightPage);
     assertEquals(TEST_PROTEIN_ACCESSION, highlightPage.getHighlights().entrySet().iterator().next().getKey().getAccession());
     assertEquals(HIGHLIGHT_PRE_FRAGMENT + TEST_PROTEIN_ACCESSION + HIGHLIGHT_POST_FRAGMENT, highlightPage.getHighlights().entrySet().iterator().next().getValue().entrySet().iterator().next().getValue().get(0));
+    testDelete(proteinIdentificationIndexService, proteinIdentificationSearchService);
   }
 
 
@@ -119,5 +120,12 @@ public class ProjectProteinIdentificationIndexerTest extends SolrTestCaseJ4 {
     proteinIdentification.setAssayAccession(TEST_ASSAY_ACCESSION);
     proteinIdentification.setAccession(TEST_PROTEIN_ACCESSION);
     proteinIdentificationIndexService.save(proteinIdentification);
+  }
+
+  private void testDelete(ProteinIdentificationIndexService proteinIdentificationIndexService, ProteinIdentificationSearchService proteinIdentificationSearchService) {
+    int MAX_PAGE_SIZE = 1;
+    while (0 < proteinIdentificationSearchService.countByProjectAccession(TEST_PROJ_ACCESSION).intValue()) {
+      proteinIdentificationSearchService.findByProjectAccession(TEST_PROJ_ACCESSION, new PageRequest(0, MAX_PAGE_SIZE)).getContent().parallelStream().forEach(proteinIdentificationIndexService::delete);
+    }
   }
 }

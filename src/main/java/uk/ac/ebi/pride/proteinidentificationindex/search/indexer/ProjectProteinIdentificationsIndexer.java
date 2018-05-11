@@ -2,6 +2,7 @@ package uk.ac.ebi.pride.proteinidentificationindex.search.indexer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.PageRequest;
 import uk.ac.ebi.pride.jmztab.model.MZTabFile;
 import uk.ac.ebi.pride.proteincatalogindex.search.indexers.ProteinDetailsIndexer;
 import uk.ac.ebi.pride.proteincatalogindex.search.model.ProteinIdentified;
@@ -75,7 +76,10 @@ public class ProjectProteinIdentificationsIndexer {
    * @param projectAccession The accession that identifies the PRIDE Archive project
    */
   public void deleteAllProteinIdentificationsForProject(String projectAccession) {
-    this.proteinIdentificationIndexService.delete(this.proteinIdentificationSearchService.findByProjectAccession(projectAccession));
+    int MAX_PAGE_SIZE = 1000;
+    while (0 < proteinIdentificationSearchService.countByProjectAccession(projectAccession).intValue()) {
+      proteinIdentificationIndexService.delete(proteinIdentificationSearchService.findByProjectAccession(projectAccession, new PageRequest(0, MAX_PAGE_SIZE)).getContent());
+    }
   }
 
   /**
