@@ -77,9 +77,21 @@ public class ProjectProteinIdentificationsIndexer {
    */
   public void deleteAllProteinIdentificationsForProject(String projectAccession) {
     int MAX_PAGE_SIZE = 1000;
-    while (0 < proteinIdentificationSearchService.countByProjectAccession(projectAccession).intValue()) {
-      proteinIdentificationIndexService.delete(proteinIdentificationSearchService.findByProjectAccession(projectAccession, new PageRequest(0, MAX_PAGE_SIZE)).getContent());
+    long proteinCount =
+        proteinIdentificationSearchService.countByProjectAccession(projectAccession);
+    List<ProteinIdentification> initialProteinsFound;
+    while (0 < proteinCount) {
+      for (int i = 0; i < (proteinCount / MAX_PAGE_SIZE) + 1; i++) {
+        initialProteinsFound =
+            proteinIdentificationSearchService
+                .findByProjectAccession(projectAccession, new PageRequest(i, MAX_PAGE_SIZE))
+                .getContent();
+        proteinIdentificationIndexService.delete(initialProteinsFound);
+      }
+      proteinCount =
+          proteinIdentificationSearchService.countByProjectAccession(projectAccession);
     }
+
   }
 
   /**
