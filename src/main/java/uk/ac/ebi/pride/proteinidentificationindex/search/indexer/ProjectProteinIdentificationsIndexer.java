@@ -76,22 +76,23 @@ public class ProjectProteinIdentificationsIndexer {
    * @param projectAccession The accession that identifies the PRIDE Archive project
    */
   public void deleteAllProteinIdentificationsForProject(String projectAccession) {
-    int MAX_PAGE_SIZE = 1000;
+    logger.info("Starting to delete proteins");
+    int MAX_PAGE_SIZE = 2000;
     long proteinCount =
         proteinIdentificationSearchService.countByProjectAccession(projectAccession);
     List<ProteinIdentification> initialProteinsFound;
-    while (0 < proteinCount) {
+    logger.info("Found " + proteinCount + " proteins to delete");
+    if (0 < proteinCount) {
       for (int i = 0; i < (proteinCount / MAX_PAGE_SIZE) + 1; i++) {
         initialProteinsFound =
             proteinIdentificationSearchService
                 .findByProjectAccession(projectAccession, new PageRequest(i, MAX_PAGE_SIZE))
                 .getContent();
+        logger.info("Deleting proteins page: " + i + " of " + (proteinCount / MAX_PAGE_SIZE));
         proteinIdentificationIndexService.delete(initialProteinsFound);
       }
-      proteinCount =
-          proteinIdentificationSearchService.countByProjectAccession(projectAccession);
+      logger.info("Finished deleting all proteins pages.");
     }
-
   }
 
   /**
